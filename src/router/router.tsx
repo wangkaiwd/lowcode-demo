@@ -1,6 +1,6 @@
 import {createBrowserRouter} from 'react-router-dom';
-import RequiredAuth from '@/components/RequiredAuth.tsx';
 import {lazy} from 'react';
+import BasicLayout from '@/components/BasicLayout/BasicLayout.tsx';
 
 const List = lazy(() => import('../pages/List'));
 const Edit = lazy(() => import('../pages/Edit'));
@@ -8,7 +8,7 @@ const Edit = lazy(() => import('../pages/Edit'));
 export const router = createBrowserRouter([
 	{
 		path: '/',
-		element: <RequiredAuth/>,
+		element: <BasicLayout/>,
 		children: [
 			{
 				index: true,
