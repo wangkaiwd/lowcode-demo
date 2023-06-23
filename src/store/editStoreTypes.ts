@@ -3,9 +3,14 @@ export interface EditorComponent {
 	styles: React.CSSProperties;
 }
 
+export interface ListItem {
+	group: string;
+	elements: { name: string }[];
+}
+
 export interface EditorStoreState {
 	components: EditorComponent[];
-	list: { name: string }[];
+	list: ListItem[];
 }
 
 export interface EditorStoreAction {

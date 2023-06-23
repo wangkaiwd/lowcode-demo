@@ -6,7 +6,17 @@ export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>
 	return {
 		components: [],
 		list: [
-			{name: 'text'}
+			{
+				group: '文本',
+				elements: [
+					{
+						name: '标题'
+					},
+					{
+						name: '正文'
+					}
+				]
+			}
 		],
 		addComponent: (component) => {
 			setState((state) => {
