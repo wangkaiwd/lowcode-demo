@@ -1,9 +1,7 @@
+import Editor from '@/components/Editor/Editor.tsx';
+
 const Edit = () => {
-	return (
-		<div>
-			Edit
-		</div>
-	);
+	return <Editor/>;
 };
 
 export default Edit;
