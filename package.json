@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.10.1",
+    "@ungap/structured-clone": "^1.2.0",
     "antd": "^5.6.1",
     "classnames": "^2.3.2",
     "immer": "^10.0.2",

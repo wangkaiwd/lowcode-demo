@@ -1,18 +1,17 @@
-export interface EditorComponent {
-	name: string;
-	style: React.CSSProperties;
-}
+import {Schema} from '@/types/schema.ts';
 
 export interface ListItem {
 	group: string;
-	elements: { name: string }[];
+	elements: Schema[];
 }
 
 export interface EditorStoreState {
-	components: EditorComponent[];
+	dragItem?: Schema;
+	components: Schema[];
 	list: ListItem[];
 }
 
 export interface EditorStoreAction {
-	addComponent: (component: EditorComponent) => void;
+	addComponent: (component: Schema) => void;
+	setDragItem: (dragItem?: EditorStoreState['dragItem']) => void;
 }

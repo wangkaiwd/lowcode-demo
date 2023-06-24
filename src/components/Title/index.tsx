@@ -1,22 +1,18 @@
-import {HTMLAttributes} from 'react';
 import css from './index.module.less';
 import cls from 'classnames';
+import {TitleProps} from '@/components/Title/types.ts';
 
-type Level = 1 | 2 | 3 | 4 | 5 | 6
-
-interface TitleProps extends HTMLAttributes<HTMLDivElement> {
-	level?: Level;
-}
 
 const Title = (
 	{
 		children,
 		className,
-		level = 3
+		level = 3,
+		style
 	}: TitleProps
 ) => {
 	return (
-		<div className={cls(css.title, className, css[`level${level}`])}>
+		<div className={cls(css.title, className, css[`level${level}`])} style={style}>
 			{children}
 		</div>
 	);
