@@ -1,4 +1,4 @@
-import Editor from '@/components/Editor/Editor.tsx';
+import Editor from '@/core/Editor/Editor.tsx';
 
 const Edit = () => {
 	return <Editor/>;

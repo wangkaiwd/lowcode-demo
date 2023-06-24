@@ -1,6 +1,6 @@
 export interface EditorComponent {
 	name: string;
-	styles: React.CSSProperties;
+	style: React.CSSProperties;
 }
 
 export interface ListItem {

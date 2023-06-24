@@ -1,11 +1,13 @@
 import {Card, Col, List, Row} from 'antd';
 import {useEditorStore} from '@/store/editStore.ts';
 import css from './leftPanel.module.less';
+import {DragEvent} from 'react';
 
 const LeftPanel = () => {
 	const {list, addComponent} = useEditorStore();
-	const onDragStart = (e: any) => {
-		console.log('e', e);
+	const onDragStart = (e: DragEvent<HTMLDivElement>) => {
+		const stringifyComponent = JSON.stringify({name: 'text', style: {background: 'pink', width: 100, height: 100}});
+		e.dataTransfer.setData('drag-item', stringifyComponent);
 	};
 	return (
 		<List
@@ -25,7 +27,7 @@ const LeftPanel = () => {
 												draggable
 												className={css.item}
 												onClick={() => {
-													addComponent({name: 'text', styles: {background: 'pink', width: 100, height: 100}});
+													addComponent({name: 'text', style: {background: 'pink', width: 100, height: 100}});
 												}}
 											>
 												{el.name}
