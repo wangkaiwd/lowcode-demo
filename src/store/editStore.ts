@@ -2,6 +2,7 @@ import {create} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
 import {EditorStoreAction, EditorStoreState} from '@/store/editStoreTypes.ts';
 import {titleSchema} from '@/components/Title/schema.tsx';
+import {imageSchema} from '@/components/Image/schema.tsx';
 
 export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>((setState) => {
 	return {
@@ -10,6 +11,10 @@ export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>
 			{
 				group: '文本',
 				elements: [titleSchema]
+			},
+			{
+				group: '图片',
+				elements: [imageSchema]
 			}
 		],
 		addComponent: (component) => {
