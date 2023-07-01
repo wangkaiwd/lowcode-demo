@@ -7,9 +7,6 @@ export const titleSchema: Schema<TitleProps> = {
 	key: 'title',
 	initialProps: {
 		children: '文本',
-		style: {
-			position: 'absolute'
-		},
 	},
 	type: Title
 };

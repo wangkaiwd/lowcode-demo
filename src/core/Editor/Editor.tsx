@@ -1,28 +1,34 @@
 import LeftPanel from '@/core/Editor/LeftPanel.tsx';
 import css from './editor.module.less';
 import {useEditorStore} from '@/store/editStore.ts';
-import {useRef} from 'react';
-import {simpleDeepClone} from '@/shared/deepClone.ts';
+import {useRef, useState} from 'react';
+import ComponentContainer from '@/core/Editor/ComponentContainer.tsx';
+
+interface Position {
+	left: number;
+	top: number;
+}
 
 const Editor = () => {
 	const canvasRef = useRef<HTMLDivElement>(null);
 	const {components, addComponent, dragItem, setDragItem} = useEditorStore();
+	const [positions, setPositions] = useState<Record<string, Position>>({});
 	const onDrop = (e: React.DragEvent) => {
 		e.preventDefault();
 		if (!dragItem || !canvasRef.current) return;
-		const {style} = dragItem.initialProps;
-		const copyStyle = simpleDeepClone(style);
 		const {left, top} = canvasRef.current.getBoundingClientRect();
 		const {clientX, clientY} = e;
-		copyStyle.left = clientX - left;
-		copyStyle.top = clientY - top;
-		addComponent({
-			...dragItem,
-			initialProps: {
-				...dragItem.initialProps,
-				style: copyStyle
+		const componentLeft = clientX - left;
+		const componentTop = clientY - top;
+		const {key} = dragItem;
+		setPositions({
+			...positions,
+			[key]: {
+				left: componentLeft,
+				top: componentTop
 			}
 		});
+		addComponent(dragItem);
 		setDragItem();
 	};
 	return (
@@ -42,7 +48,12 @@ const Editor = () => {
 				{
 					components.map((componentSchema, i) => {
 						const Component = componentSchema.type;
-						return <Component key={i} {...componentSchema.initialProps}/>;
+						const position = positions[componentSchema.key];
+						return (
+							<ComponentContainer key={i} style={position}>
+								<Component key={i} {...componentSchema.initialProps}/>
+							</ComponentContainer>
+						);
 					})
 				}
 			</div>

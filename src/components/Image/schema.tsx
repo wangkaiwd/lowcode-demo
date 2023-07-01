@@ -6,10 +6,7 @@ export const imageSchema: Schema<ImageProps> = {
 	name: '图片A',
 	key: 'image',
 	initialProps: {
-		style: {
-			position: 'absolute',
-			width: 100
-		},
 	},
 	type: Image
 };
+
