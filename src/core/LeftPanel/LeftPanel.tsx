@@ -1,7 +1,7 @@
 import {Card, Col, List, Row} from 'antd';
-import {useEditorStore} from '@/store/editStore.ts';
+import {useEditorStore} from '../../store/editStore.ts';
 import css from './leftPanel.module.less';
-import {Schema} from '@/types/schema.ts';
+import {Schema} from '../../types/schema.ts';
 
 const LeftPanel = () => {
 	const {list, addComponent, setDragItem} = useEditorStore();

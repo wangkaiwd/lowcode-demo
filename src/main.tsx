@@ -1,14 +1,13 @@
 import ReactDOM from 'react-dom/client';
-import {StyleProvider} from '@ant-design/cssinjs';
-import {App as AntdApp} from 'antd';
+import { App as AntdApp } from 'antd';
 import './assets/styles/index.css';
-import {RouterProvider} from 'react-router-dom';
-import {router} from '@/router/router';
+import { RouterProvider } from 'react-router-dom';
+import { router } from '@/router/router';
+import { enableMapSet } from 'immer';
 
+enableMapSet();
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-	<StyleProvider hashPriority={'high'}>
-		<AntdApp>
-			<RouterProvider router={router}/>
-		</AntdApp>
-	</StyleProvider>
+  <AntdApp>
+    <RouterProvider router={router}/>
+  </AntdApp>
 );
