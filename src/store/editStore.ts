@@ -8,12 +8,17 @@ import { Schema } from '../types/schema.ts';
 export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>((setState, getState) => {
   return {
     components: [],
-    get componentsMap () {
-      const { components } = getState();
-      return components.reduce<Record<string, Schema>>((acc, com) => {
-        acc[com.key] = com;
-        return acc;
-      }, {});
+    // https://github.com/pmndrs/zustand/issues/132#issuecomment-1120467721
+    // todo: why need to nest object ?
+    computed: {
+      get componentsMap () {
+        const { components } = getState();
+        console.log('components', components, getState());
+        return components.reduce<Record<string, Schema>>((acc, com) => {
+          acc[com.uid] = com;
+          return acc;
+        }, {});
+      },
     },
     selectedKeys: new Set(),
     list: [

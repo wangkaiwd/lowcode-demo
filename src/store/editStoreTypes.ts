@@ -5,15 +5,21 @@ export interface ListItem {
   elements: Schema[];
 }
 
+export interface InternalComponent extends Schema {
+  uid: string;
+}
+
 export interface EditorStoreState {
-  dragItem?: Schema;
-  components: Schema[];
+  dragItem?: InternalComponent;
+  components: InternalComponent[];
   list: ListItem[];
   selectedKeys: Set<string>;
-  componentsMap: Record<string, Schema>;
+  computed: {
+    componentsMap: Record<string, Schema>;
+  };
 }
 
 export interface EditorStoreAction {
-  addComponent: (component: Schema) => void;
+  addComponent: (component: InternalComponent) => void;
   setDragItem: (dragItem?: EditorStoreState['dragItem']) => void;
 }

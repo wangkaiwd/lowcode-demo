@@ -20,10 +20,10 @@ const Editor = () => {
     const { clientX, clientY } = e;
     const componentLeft = clientX - left;
     const componentTop = clientY - top;
-    const { key } = dragItem;
+    const { uid } = dragItem;
     setPositions({
       ...positions,
-      [key]: {
+      [uid]: {
         left: componentLeft,
         top: componentTop
       }
@@ -48,10 +48,10 @@ const Editor = () => {
         {
           components.map((componentSchema) => {
             const Component = componentSchema.type;
-            const position = positions[componentSchema.key];
+            const position = positions[componentSchema.uid];
             return (
-              <ComponentContainer id={componentSchema.key} key={componentSchema.key} style={position}>
-                <Component key={componentSchema.key} {...componentSchema.initialProps}/>
+              <ComponentContainer id={componentSchema.uid} key={componentSchema.uid} style={position}>
+                <Component {...componentSchema.initialProps}/>
               </ComponentContainer>
             );
           })
