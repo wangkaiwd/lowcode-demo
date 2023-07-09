@@ -13,7 +13,6 @@ export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>
     computed: {
       get componentsMap () {
         const { components } = getState();
-        console.log('components', components, getState());
         return components.reduce<Record<string, Schema>>((acc, com) => {
           acc[com.uid] = com;
           return acc;
@@ -47,10 +46,31 @@ export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>
 export const onChangeSelected = (key: string) => {
   useEditorStore.setState((draft) => {
     const { selectedKeys } = draft;
-    if (selectedKeys.has(key)) {
-      selectedKeys.delete(key);
-    } else {
+    if (!selectedKeys.has(key)) {
       selectedKeys.add(key);
     }
+  });
+};
+
+export const clearSelected = () => {
+  useEditorStore.setState((draft) => {
+    const { selectedKeys } = draft;
+    selectedKeys.clear();
+  });
+};
+
+export const updateComponentByKey = (key: string, newProps: Partial<Schema>) => {
+  useEditorStore.setState((draft) => {
+    const { componentsMap } = draft.computed;
+    const component = componentsMap[key];
+    componentsMap[key] = {
+      ...component,
+      ...newProps,
+      style: {
+        ...component.style,
+        ...newProps.style
+      }
+    };
+    console.log('new', componentsMap);
   });
 };

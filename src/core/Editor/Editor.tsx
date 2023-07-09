@@ -1,18 +1,27 @@
 import LeftPanel from '../LeftPanel/LeftPanel.tsx';
 import css from './editor.module.less';
-import { useEditorStore } from '@/store/editStore.ts';
-import { useRef, useState } from 'react';
+import componentContainerCss from '../ComponentContainer/componentContainer.module.less';
+import { clearSelected, useEditorStore } from '@/store/editStore.ts';
+import { useEffect, useRef } from 'react';
 import ComponentContainer from '../ComponentContainer/ComponentContainer.tsx';
-
-interface Position {
-  left: number;
-  top: number;
-}
 
 const Editor = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const { components, addComponent, dragItem, setDragItem } = useEditorStore();
-  const [positions, setPositions] = useState<Record<string, Position>>({});
+
+  useEffect(() => {
+    const listenDocument = (e: Event) => {
+      const componentContainerRef = document.querySelector(`.${componentContainerCss.componentContainer}`);
+      if (!componentContainerRef?.contains(e.target as HTMLDivElement)) {
+        clearSelected();
+      }
+    };
+    document.addEventListener('click', listenDocument);
+    return () => {
+      document.removeEventListener('click', listenDocument);
+    };
+  }, []);
+
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     if (!dragItem || !canvasRef.current) return;
@@ -20,15 +29,13 @@ const Editor = () => {
     const { clientX, clientY } = e;
     const componentLeft = clientX - left;
     const componentTop = clientY - top;
-    const { uid } = dragItem;
-    setPositions({
-      ...positions,
-      [uid]: {
+    addComponent({
+      ...dragItem,
+      style: {
         left: componentLeft,
         top: componentTop
       }
     });
-    addComponent(dragItem);
     setDragItem();
   };
   return (
@@ -48,9 +55,8 @@ const Editor = () => {
         {
           components.map((componentSchema) => {
             const Component = componentSchema.type;
-            const position = positions[componentSchema.uid];
             return (
-              <ComponentContainer id={componentSchema.uid} key={componentSchema.uid} style={position}>
+              <ComponentContainer id={componentSchema.uid} key={componentSchema.uid} style={componentSchema.style}>
                 <Component {...componentSchema.initialProps}/>
               </ComponentContainer>
             );

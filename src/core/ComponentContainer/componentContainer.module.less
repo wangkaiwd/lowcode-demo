@@ -1,6 +1,14 @@
 .componentContainer {
   position: absolute;
+  border: 2px solid #ffffff;
+  cursor: default;
+  &:hover {
+    border: 2px solid #C2DEDC;
+  }
 }
 .selected {
   border: 2px solid #C2DEDC;
+  &:active {
+    cursor: move;
+  }
 }
