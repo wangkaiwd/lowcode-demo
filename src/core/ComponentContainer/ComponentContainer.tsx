@@ -29,10 +29,8 @@ const ComponentContainer = ({ style, className, children, id }: ComponentContain
     const { clientX, clientY } = e;
     const distanceX = clientX - startX;
     const distanceY = clientY - startY;
-    console.log('client', distanceX, distanceY);
     selectedKeys.forEach(key => {
       const component = componentsMap[key];
-      console.log('cmp', JSON.stringify(component.style, null, 2));
       if (component && component.style) {
         const { left, top } = component.style;
         updateComponentByUid(key, {
@@ -43,6 +41,10 @@ const ComponentContainer = ({ style, className, children, id }: ComponentContain
         });
       }
     });
+    startCoordinate.current = {
+      startX: clientX,
+      startY: clientY
+    };
   }, 10));
   const selected = selectedKeys.has(id);
   const onMouseDown = (e: React.MouseEvent) => {
