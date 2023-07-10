@@ -4,6 +4,7 @@ import { EditorStoreAction, EditorStoreState } from '@/store/editStoreTypes.ts';
 import { titleSchema } from '@/components/Title/schema.tsx';
 import { imageSchema } from '@/components/Image/schema.tsx';
 import { Schema } from '../types/schema.ts';
+import { merge } from 'lodash-es';
 
 export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>((setState, getState) => {
   return {
@@ -59,18 +60,21 @@ export const clearSelected = () => {
   });
 };
 
-export const updateComponentByKey = (key: string, newProps: Partial<Schema>) => {
+interface Options {
+  multiple: boolean;
+}
+
+export const updateComponentByUid = (uid: string, newProps: Partial<Schema>, options: Options = { multiple: false }) => {
   useEditorStore.setState((draft) => {
-    const { componentsMap } = draft.computed;
-    const component = componentsMap[key];
-    componentsMap[key] = {
-      ...component,
-      ...newProps,
-      style: {
-        ...component.style,
-        ...newProps.style
+    const { components } = draft;
+    for (let i = 0; i < components.length; i++) {
+      const component = components[i];
+      if (component.uid === uid) {
+        components[i] = merge(component, newProps);
+        if (!options.multiple) {
+          return;
+        }
       }
-    };
-    console.log('new', componentsMap);
+    }
   });
 };

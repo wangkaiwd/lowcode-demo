@@ -1,55 +1,71 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, useRef } from 'react';
 import css from './componentContainer.module.less';
 import cls from 'classnames';
-import { onChangeSelected, updateComponentByKey, useEditorStore } from '../../store/editStore.ts';
+import { onChangeSelected, updateComponentByUid, useEditorStore } from '../../store/editStore.ts';
+import { throttle } from 'lodash-es';
+import { useMemoizedFn } from '../../hooks/useMemoizedFn.ts';
 
 interface ComponentContainerProps extends ComponentProps<'div'> {
   id: string;
 }
 
+interface StartCoordinate {
+  startX: number;
+  startY: number;
+}
+
 const ComponentContainer = ({ style, className, children, id }: ComponentContainerProps) => {
-  const { selectedKeys, computed, components } = useEditorStore();
+  const { selectedKeys, computed } = useEditorStore();
   const { componentsMap } = computed;
+  const startCoordinate = useRef<StartCoordinate | null>(null);
   const onClick = () => {
     onChangeSelected(id);
   };
+  const onMove = useMemoizedFn(throttle((e: MouseEvent) => {
+    if (!startCoordinate.current) {
+      return;
+    }
+    const { startX, startY } = startCoordinate.current;
+    const { clientX, clientY } = e;
+    const distanceX = clientX - startX;
+    const distanceY = clientY - startY;
+    console.log('client', distanceX, distanceY);
+    selectedKeys.forEach(key => {
+      const component = componentsMap[key];
+      console.log('cmp', JSON.stringify(component.style, null, 2));
+      if (component && component.style) {
+        const { left, top } = component.style;
+        updateComponentByUid(key, {
+          style: {
+            left: left as number + distanceX,
+            top: top as number + distanceY
+          }
+        });
+      }
+    });
+  }, 10));
   const selected = selectedKeys.has(id);
-  console.log('log', componentsMap, components);
   const onMouseDown = (e: React.MouseEvent) => {
     const { clientX: startX, clientY: startY } = e;
-    e.preventDefault();
-    const onMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const distanceX = clientX - startX;
-      const distanceY = clientY - startY;
-      selectedKeys.forEach(key => {
-        const component = componentsMap[key];
-        if (component && component.style) {
-          const { left, top } = component.style;
-          updateComponentByKey(key, {
-            style: {
-              left: left as number + distanceX,
-              top: top as number + distanceY
-            }
-          });
-        }
-      });
+    startCoordinate.current = {
+      startX,
+      startY
     };
+    onChangeSelected(id);
+    e.preventDefault();
     const onUp = () => {
+      startCoordinate.current = null;
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('mouseleave', onMove);
     };
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
-    console.log('mouse down');
-  };
-  const onMouseUp = () => {
-    console.log('mouse up');
+    document.addEventListener('mouseleave', onUp);
   };
   return (
     <div
       onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
       className={cls(css.componentContainer, className, { [css.selected]: selected })}
       style={style}
       onClick={onClick}
