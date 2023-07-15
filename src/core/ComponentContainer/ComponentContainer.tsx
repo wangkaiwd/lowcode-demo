@@ -1,4 +1,4 @@
-import { ComponentProps, useRef } from 'react';
+import { ComponentProps, forwardRef, useImperativeHandle, useRef } from 'react';
 import css from './componentContainer.module.less';
 import cls from 'classnames';
 import { onChangeSelected, updateComponentByUid, useEditorStore } from '../../store/editStore.ts';
@@ -14,10 +14,21 @@ interface StartCoordinate {
   startY: number;
 }
 
-const ComponentContainer = ({ style, className, children, id }: ComponentContainerProps) => {
+const ComponentContainer = forwardRef(({
+  style,
+  className,
+  children,
+  id
+}: ComponentContainerProps, ref) => {
   const { selectedKeys, computed } = useEditorStore();
   const { componentsMap } = computed;
+  const elRef = useRef<HTMLDivElement | null>(null);
   const startCoordinate = useRef<StartCoordinate | null>(null);
+  useImperativeHandle(ref, () => {
+    return {
+      el: elRef.current
+    };
+  });
   const onClick = () => {
     onChangeSelected(id);
   };
@@ -59,7 +70,7 @@ const ComponentContainer = ({ style, className, children, id }: ComponentContain
       startCoordinate.current = null;
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
-      document.removeEventListener('mouseleave', onMove);
+      document.removeEventListener('mouseleave', onUp);
     };
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
@@ -67,6 +78,7 @@ const ComponentContainer = ({ style, className, children, id }: ComponentContain
   };
   return (
     <div
+      ref={elRef}
       onMouseDown={onMouseDown}
       className={cls(css.componentContainer, className, { [css.selected]: selected })}
       style={style}
@@ -75,6 +87,6 @@ const ComponentContainer = ({ style, className, children, id }: ComponentContain
       {children}
     </div>
   );
-};
+});
 
 export default ComponentContainer;
