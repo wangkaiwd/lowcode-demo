@@ -3,17 +3,19 @@ import css from './editor.module.less';
 import { clearSelected, useEditorStore } from '@/store/editStore.ts';
 import { useEffect, useRef } from 'react';
 import ComponentContainer from '../ComponentContainer/ComponentContainer.tsx';
+import OuterBox from '../OuterBox';
 
 const Editor = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const { components, addComponent, dragItem, setDragItem } = useEditorStore();
   const containerRef = useRef<any>({});
+  const outerBoxRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const listenDocument = (e: Event) => {
       const notContains = Object.entries(containerRef.current).every(([, v]: any) => {
         return !v.el.contains(e.target);
       });
-      if (notContains) {
+      if (notContains && !outerBoxRef.current?.contains(e.target as any)) {
         clearSelected();
       }
     };
@@ -34,7 +36,9 @@ const Editor = () => {
       ...dragItem,
       style: {
         left: componentLeft,
-        top: componentTop
+        top: componentTop,
+        width: 100,
+        height: 100
       }
     });
     setDragItem();
@@ -53,6 +57,7 @@ const Editor = () => {
           e.preventDefault();
         }}
       >
+        <OuterBox ref={outerBoxRef}/>
         {
           components.map((componentSchema) => {
             const Component = componentSchema.type;
