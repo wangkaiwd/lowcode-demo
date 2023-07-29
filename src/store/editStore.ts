@@ -5,6 +5,7 @@ import { titleSchema } from '@/components/Title/schema.tsx';
 import { imageSchema } from '@/components/Image/schema.tsx';
 import { Schema } from '../types/schema.ts';
 import { merge } from 'lodash-es';
+import { Direction } from '../core/StretchControls/types.ts';
 
 export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>((setState, getState) => {
   return {
@@ -60,20 +61,38 @@ export const clearSelected = () => {
   });
 };
 
-interface Options {
-  multiple: boolean;
-}
+export const updateSelectedComponentsDimensions = (deltaX: number, deltaY: number, direction: Direction) => {
+  // getState will get latest state
+  const { selectedKeys, computed } = useEditorStore.getState();
+  const { componentsMap } = computed;
+  const selectedKeysArray = [...selectedKeys];
+  selectedKeysArray.map((key) => {
+    const component = componentsMap[key];
+    if (component.style) {
+      const { width, height, left, top } = component.style;
+      const newWidth = width as number + deltaX;
+      const newHeight = height as number + deltaY;
+      let newTop = top;
+      let newLeft = left;
+      if (direction.includes('left')) {
+        newLeft = newLeft as number + deltaX;
+      }
+      if (direction.includes('top')) {
+        newTop = newTop as number + deltaY;
+      }
+      updateComponentByUid(key, { style: { width: newWidth, height: newHeight, left: newLeft, top: newTop } });
+    }
+  });
+};
 
-export const updateComponentByUid = (uid: string, newProps: Partial<Schema>, options: Options = { multiple: false }) => {
+export const updateComponentByUid = (uid: string, newProps: Partial<Schema>) => {
   useEditorStore.setState((draft) => {
     const { components } = draft;
     for (let i = 0; i < components.length; i++) {
       const component = components[i];
       if (component.uid === uid) {
         components[i] = merge(component, newProps);
-        if (!options.multiple) {
-          return;
-        }
+        return;
       }
     }
   });
