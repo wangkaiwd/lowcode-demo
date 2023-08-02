@@ -5,7 +5,6 @@ import { titleSchema } from '@/components/Title/schema.tsx';
 import { imageSchema } from '@/components/Image/schema.tsx';
 import { Schema } from '../types/schema.ts';
 import { merge } from 'lodash-es';
-import { Direction } from '../core/StretchControls/types.ts';
 
 export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>((setState, getState) => {
   return {
@@ -61,7 +60,7 @@ export const clearSelected = () => {
   });
 };
 
-export const updateSelectedComponentsDimensions = (deltaX: number, deltaY: number, direction: Direction) => {
+export const updateSelectedComponentsDimensions = (deltaX: number, deltaY: number, deltaLeft: number, deltaTop: number) => {
   // getState will get latest state
   const { selectedKeys, computed } = useEditorStore.getState();
   const { componentsMap } = computed;
@@ -72,14 +71,8 @@ export const updateSelectedComponentsDimensions = (deltaX: number, deltaY: numbe
       const { width, height, left, top } = component.style;
       const newWidth = width as number + deltaX;
       const newHeight = height as number + deltaY;
-      let newTop = top;
-      let newLeft = left;
-      if (direction.includes('left')) {
-        newLeft = newLeft as number + deltaX;
-      }
-      if (direction.includes('top')) {
-        newTop = newTop as number + deltaY;
-      }
+      const newLeft = left as number + deltaLeft;
+      const newTop = top as number + deltaTop;
       updateComponentByUid(key, { style: { width: newWidth, height: newHeight, left: newLeft, top: newTop } });
     }
   });

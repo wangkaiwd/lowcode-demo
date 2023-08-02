@@ -1,7 +1,7 @@
 import LeftPanel from '../LeftPanel/LeftPanel.tsx';
 import css from './editor.module.less';
 import { clearSelected, useEditorStore } from '@/store/editStore.ts';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ComponentContainer from '../ComponentContainer/ComponentContainer.tsx';
 import OuterBox from '../OuterBox';
 
