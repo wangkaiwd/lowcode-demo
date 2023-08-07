@@ -1,7 +1,7 @@
 import { useMemoizedFn } from './useMemoizedFn.ts';
 import { throttle } from 'lodash-es';
 import { updateComponentByUid, useEditorStore } from '../store/editStore.ts';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 
 interface StartCoordinate {
   startX: number;

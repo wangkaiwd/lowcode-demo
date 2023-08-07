@@ -13,9 +13,9 @@ const Editor = () => {
   useEffect(() => {
     const listenDocument = (e: Event) => {
       const notContains = Object.entries(containerRef.current).every(([, v]: any) => {
-        return !v.el.contains(e.target);
+        return !v.contains(e.target);
       });
-      if (notContains && !outerBoxRef.current?.contains(e.target as any)) {
+      if (notContains && !outerBoxRef.current?.contains(e.target as HTMLDivElement)) {
         clearSelected();
       }
     };
