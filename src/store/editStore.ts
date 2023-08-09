@@ -8,6 +8,7 @@ import { merge } from 'lodash-es';
 
 export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>((setState, getState) => {
   return {
+    zoom: 1,
     components: [],
     // https://github.com/pmndrs/zustand/issues/132#issuecomment-1120467721
     // todo: why need to nest object ?
@@ -43,6 +44,12 @@ export const useEditorStore = create(immer<EditorStoreState & EditorStoreAction>
     }
   };
 }));
+
+export const onZoomChange = (value: EditorStoreState['zoom']) => {
+  useEditorStore.setState((draft) => {
+    draft.zoom = value;
+  });
+};
 
 export const onChangeSelected = (key: string) => {
   useEditorStore.setState((draft) => {

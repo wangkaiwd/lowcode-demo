@@ -4,10 +4,11 @@ import { clearSelected, useEditorStore } from '@/store/editStore.ts';
 import React, { useEffect, useRef } from 'react';
 import ComponentContainer from '../ComponentContainer/ComponentContainer.tsx';
 import OuterBox from '../OuterBox';
+import Scale from '../Scale';
 
 const Editor = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const { components, addComponent, dragItem, setDragItem } = useEditorStore();
+  const { components, addComponent, dragItem, setDragItem, zoom } = useEditorStore();
   const containerRef = useRef<any>({});
   const outerBoxRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -52,11 +53,13 @@ const Editor = () => {
         ref={canvasRef}
         className={css.canvas}
         onDrop={onDrop}
+        style={{ transform: `scale(${zoom})` }}
         onDragOver={(e) => {
           // todo: must prevent browser, otherwise drop event can't execute
           e.preventDefault();
         }}
       >
+        <Scale/>
         <OuterBox ref={outerBoxRef}/>
         {
           components.map((componentSchema) => {
