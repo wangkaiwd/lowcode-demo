@@ -6,11 +6,19 @@
     padding: 0 10px;
     width: 400px;
   }
-
-  .canvas {
+  .canvasWrapper {
     flex: 1;
+    margin: 0 40px;
+  }
+  .canvasScrollView {
+    height: calc(100% - 34px);
+    overflow: auto;
+  }
+  .canvas {
     position: relative;
     background-color: #fff;
-    margin: 0 40px;
+    height: 100%;
+    // default is center and cause content invisible
+    transform-origin: 0 0;
   }
 }

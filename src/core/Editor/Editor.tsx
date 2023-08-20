@@ -49,33 +49,37 @@ const Editor = () => {
       <div className={css.leftPanel}>
         <LeftPanel/>
       </div>
-      <div
-        ref={canvasRef}
-        className={css.canvas}
-        onDrop={onDrop}
-        style={{ transform: `scale(${zoom})` }}
-        onDragOver={(e) => {
-          // todo: must prevent browser, otherwise drop event can't execute
-          e.preventDefault();
-        }}
-      >
+      <div className={css.canvasWrapper}>
         <Scale/>
-        <OuterBox ref={outerBoxRef}/>
-        {
-          components.map((componentSchema) => {
-            const Component = componentSchema.type;
-            return (
-              <ComponentContainer
-                ref={(ref) => containerRef.current[componentSchema.uid] = ref}
-                id={componentSchema.uid}
-                key={componentSchema.uid}
-                style={componentSchema.style}
-              >
-                <Component {...componentSchema.initialProps}/>
-              </ComponentContainer>
-            );
-          })
-        }
+        <div className={css.canvasScrollView}>
+          <div
+            ref={canvasRef}
+            className={css.canvas}
+            onDrop={onDrop}
+            style={{ transform: `scale(${zoom})` }}
+            onDragOver={(e) => {
+              // todo: must prevent browser, otherwise drop event can't execute
+              e.preventDefault();
+            }}
+          >
+            <OuterBox ref={outerBoxRef}/>
+            {
+              components.map((componentSchema) => {
+                const Component = componentSchema.type;
+                return (
+                  <ComponentContainer
+                    ref={(ref) => containerRef.current[componentSchema.uid] = ref}
+                    id={componentSchema.uid}
+                    key={componentSchema.uid}
+                    style={componentSchema.style}
+                  >
+                    <Component {...componentSchema.initialProps}/>
+                  </ComponentContainer>
+                );
+              })
+            }
+          </div>
+        </div>
       </div>
     </div>
   );

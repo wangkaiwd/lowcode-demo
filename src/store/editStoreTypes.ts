@@ -12,7 +12,7 @@ export interface InternalComponent extends Schema {
 export interface EditorStoreState {
   dragItem?: InternalComponent;
   components: InternalComponent[];
-  zoom: number | null;
+  zoom: number;
   list: ListItem[];
   selectedKeys: Set<string>;
   computed: {

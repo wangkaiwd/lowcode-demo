@@ -13,7 +13,7 @@ interface UseMoveOptions {
 }
 
 export const useMove = (options: UseMoveOptions = {}) => {
-  const { selectedKeys, computed } = useEditorStore();
+  const { selectedKeys, computed, zoom } = useEditorStore();
   const { componentsMap } = computed;
   const startCoordinate = useRef<StartCoordinate | null>(null);
   const onMove = useMemoizedFn(throttle((e: MouseEvent) => {
@@ -22,8 +22,8 @@ export const useMove = (options: UseMoveOptions = {}) => {
     }
     const { startX, startY } = startCoordinate.current;
     const { clientX, clientY } = e;
-    const distanceX = clientX - startX;
-    const distanceY = clientY - startY;
+    const distanceX = (clientX - startX) / zoom;
+    const distanceY = (clientY - startY) / zoom;
     selectedKeys.forEach(key => {
       const component = componentsMap[key];
       if (component && component.style) {

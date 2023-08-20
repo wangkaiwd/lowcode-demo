@@ -4,7 +4,9 @@ import { onZoomChange, useEditorStore } from '../../store/editStore.ts';
 const Scale = () => {
   const { zoom } = useEditorStore();
   const onChange = (newValue: number | null) => {
-    onZoomChange(newValue);
+    if (newValue != null) {
+      onZoomChange(newValue);
+    }
   };
 
   return (

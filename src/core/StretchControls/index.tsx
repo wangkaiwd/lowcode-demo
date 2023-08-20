@@ -1,18 +1,20 @@
 import css from './index.module.less';
 import cls from 'classnames';
-import { updateSelectedComponentsDimensions } from '../../store/editStore.ts';
+import { updateSelectedComponentsDimensions, useEditorStore } from '../../store/editStore.ts';
 import { throttle } from 'lodash-es';
 import { Direction } from './types.ts';
 import React from 'react';
 
 const StretchControls = () => {
+  const { zoom } = useEditorStore();
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>, direction: Direction) => {
     let { clientX: startX, clientY: startY } = e;
     e.stopPropagation();
+    // update resize position and size
     const onMouseMove = throttle((e: MouseEvent) => {
       const { clientX, clientY } = e;
-      const rawDeltaX = clientX - startX;
-      const rawDeltaY = clientY - startY;
+      const rawDeltaX = (clientX - startX) / zoom;
+      const rawDeltaY = (clientY - startY) / zoom;
       const directionsMap = {
         topLeft: { deltaX: -rawDeltaX, deltaY: -rawDeltaY, deltaLeft: rawDeltaX, deltaTop: rawDeltaY },
         top: { deltaX: 0, deltaY: -rawDeltaY, deltaLeft: 0, deltaTop: rawDeltaY },
@@ -25,6 +27,7 @@ const StretchControls = () => {
       };
       const { deltaX, deltaY, deltaTop, deltaLeft } = directionsMap[direction];
       updateSelectedComponentsDimensions(deltaX, deltaY, deltaLeft, deltaTop);
+
       startX = clientX;
       startY = clientY;
     }, 10);
