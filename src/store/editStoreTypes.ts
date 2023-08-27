@@ -13,10 +13,12 @@ export interface EditorStoreState {
   dragItem?: InternalComponent;
   components: InternalComponent[];
   zoom: number;
+  canvasConfig: Record<string, any>;
   list: ListItem[];
   selectedKeys: Set<string>;
   computed: {
     componentsMap: Record<string, Schema>;
+    selectedComponents: Schema[];
   };
 }
 

@@ -5,14 +5,26 @@ import React, { useEffect, useRef } from 'react';
 import ComponentContainer from '../ComponentContainer/ComponentContainer.tsx';
 import OuterBox from '../OuterBox';
 import Scale from '../Scale';
+import RightPanel from '../RightPanel';
 
 const Editor = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const { components, addComponent, dragItem, setDragItem, zoom } = useEditorStore();
+  const {
+    components,
+    addComponent,
+    dragItem,
+    setDragItem,
+    zoom,
+    canvasConfig,
+    computed: { selectedComponents }
+  } = useEditorStore();
   const containerRef = useRef<any>({});
   const outerBoxRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const listenDocument = (e: Event) => {
+      if (!canvasRef.current?.contains(e.target as HTMLDivElement)) {
+        return;
+      }
       const notContains = Object.entries(containerRef.current).every(([, v]: any) => {
         return !v.contains(e.target);
       });
@@ -35,7 +47,7 @@ const Editor = () => {
     const componentTop = clientY - top;
     addComponent({
       ...dragItem,
-      style: {
+      wrapperStyle: {
         left: componentLeft,
         top: componentTop,
         width: 100,
@@ -50,13 +62,14 @@ const Editor = () => {
         <LeftPanel/>
       </div>
       <div className={css.canvasWrapper}>
+        <RightPanel Config={selectedComponents[0]?.ConfigView}/>
         <Scale/>
         <div className={css.canvasScrollView}>
           <div
             ref={canvasRef}
             className={css.canvas}
             onDrop={onDrop}
-            style={{ transform: `scale(${zoom})` }}
+            style={{ ...canvasConfig, transform: `scale(${zoom})` }}
             onDragOver={(e) => {
               // todo: must prevent browser, otherwise drop event can't execute
               e.preventDefault();
@@ -71,9 +84,9 @@ const Editor = () => {
                     ref={(ref) => containerRef.current[componentSchema.uid] = ref}
                     id={componentSchema.uid}
                     key={componentSchema.uid}
-                    style={componentSchema.style}
+                    style={componentSchema.wrapperStyle}
                   >
-                    <Component {...componentSchema.initialProps}/>
+                    <Component {...componentSchema.props} className={css.component}/>
                   </ComponentContainer>
                 );
               })

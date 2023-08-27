@@ -5,23 +5,21 @@ import { useMove } from '../../hooks/useMove.tsx';
 import StretchControls from '../StretchControls';
 
 const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
-  const { selectedKeys, computed } = useEditorStore();
-  const { componentsMap } = computed;
-  const selectedKeysArray = [...selectedKeys];
-  const selectedComponents = selectedKeysArray.map((uid) => componentsMap[uid]);
+  const { computed } = useEditorStore();
+  const { selectedComponents } = computed;
   const { onMouseDown } = useMove();
   const outerStyle = useMemo(() => {
     if (!selectedComponents.length) {return { display: 'none' };}
     let minLeft = 99999, minTop = 99999, maxLeftWithWidth = 0, maxTopWithHeight = 0;
     for (let i = 0; i < selectedComponents.length; i++) {
       const current = selectedComponents[i];
-      if (current.style) {
+      if (current.wrapperStyle) {
         const {
           left,
           top,
           width,
           height
-        } = current.style;
+        } = current.wrapperStyle;
         minLeft = Math.min(minLeft, left as number || 0);
         minTop = Math.min(minTop, top as number || 0);
         maxLeftWithWidth = Math.max(maxLeftWithWidth, (left as number) + (width as number));

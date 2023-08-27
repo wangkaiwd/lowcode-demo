@@ -26,10 +26,10 @@ export const useMove = (options: UseMoveOptions = {}) => {
     const distanceY = (clientY - startY) / zoom;
     selectedKeys.forEach(key => {
       const component = componentsMap[key];
-      if (component && component.style) {
-        const { left, top } = component.style;
+      if (component && component.wrapperStyle) {
+        const { left, top } = component.wrapperStyle;
         updateComponentByUid(key, {
-          style: {
+          wrapperStyle: {
             left: left as number + distanceX,
             top: top as number + distanceY
           }
