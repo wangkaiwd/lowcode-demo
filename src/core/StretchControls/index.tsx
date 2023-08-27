@@ -4,6 +4,7 @@ import { updateSelectedComponentsDimensions, useEditorStore } from '../../store/
 import { throttle } from 'lodash-es';
 import { Direction } from './types.ts';
 import React from 'react';
+import { getAbsMaxValues } from '../../shared/utils.ts';
 
 const StretchControls = () => {
   const { zoom } = useEditorStore();
@@ -15,15 +16,17 @@ const StretchControls = () => {
       const { clientX, clientY } = e;
       const rawDeltaX = (clientX - startX) / zoom;
       const rawDeltaY = (clientY - startY) / zoom;
+      const { x: rawMaxDeltaX, y: rawMaxDeltaY } = getAbsMaxValues(rawDeltaX, rawDeltaY);
+      // compare x,y relation
       const directionsMap = {
-        topLeft: { deltaX: -rawDeltaX, deltaY: -rawDeltaY, deltaLeft: rawDeltaX, deltaTop: rawDeltaY },
+        topLeft: { deltaX: -rawMaxDeltaX, deltaY: -rawMaxDeltaX, deltaLeft: rawMaxDeltaX, deltaTop: rawMaxDeltaX },
         top: { deltaX: 0, deltaY: -rawDeltaY, deltaLeft: 0, deltaTop: rawDeltaY },
-        topRight: { deltaX: rawDeltaX, deltaY: -rawDeltaY, deltaLeft: 0, deltaTop: rawDeltaY },
+        topRight: { deltaX: rawMaxDeltaX, deltaY: rawMaxDeltaX, deltaLeft: 0, deltaTop: rawMaxDeltaY },
         right: { deltaX: rawDeltaX, deltaY: 0, deltaLeft: 0, deltaTop: 0 },
-        bottomRight: { deltaX: rawDeltaX, deltaY: rawDeltaY, deltaLeft: 0, deltaTop: 0 },
+        bottomRight: { deltaX: rawMaxDeltaX, deltaY: rawMaxDeltaX, deltaLeft: 0, deltaTop: 0 },
         bottom: { deltaX: 0, deltaY: rawDeltaY, deltaLeft: 0, deltaTop: 0 },
-        bottomLeft: { deltaX: -rawDeltaX, deltaY: rawDeltaY, deltaLeft: rawDeltaX, deltaTop: 0 },
-        left: { deltaX: -rawDeltaX, deltaY: 0, deltaLeft: rawDeltaX, deltaTop: 0 },
+        bottomLeft: { deltaX: rawMaxDeltaY, deltaY: rawMaxDeltaY, deltaLeft: rawMaxDeltaX, deltaTop: 0 },
+        left: { deltaX: -rawMaxDeltaX, deltaY: 0, deltaLeft: rawMaxDeltaX, deltaTop: 0 },
       };
       const { deltaX, deltaY, deltaTop, deltaLeft } = directionsMap[direction];
       updateSelectedComponentsDimensions(deltaX, deltaY, deltaLeft, deltaTop);
