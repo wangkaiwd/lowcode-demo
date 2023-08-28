@@ -16,13 +16,11 @@ export interface EditorStoreState {
   canvasConfig: Record<string, any>;
   list: ListItem[];
   selectedKeys: Set<string>;
-  computed: {
-    componentsMap: Record<string, Schema>;
-    selectedComponents: Schema[];
-  };
 }
 
 export interface EditorStoreAction {
   addComponent: (component: InternalComponent) => void;
   setDragItem: (dragItem?: EditorStoreState['dragItem']) => void;
 }
+
+export type EditorStore = EditorStoreState & EditorStoreAction

@@ -1,13 +1,20 @@
-import { Image as AntdImage, ImageProps } from 'antd';
+import { Image as AntdImage } from 'antd';
+
+interface ImageConfig {
+  src: string;
+}
+
+interface ImageProps {
+  config: ImageConfig;
+}
 
 const Image = (props: ImageProps) => {
-  console.log('props', props);
+  const { config } = props;
   return (
     <AntdImage
-      src={'https://w7.pngwing.com/pngs/79/518/png-transparent-js-react-js-logo-react-react-native-logos-icon-thumbnail.png'}
+      src={config.src}
       width={'100%'}
       height={'100%'}
-      {...props}
       preview={false}
     />
   );

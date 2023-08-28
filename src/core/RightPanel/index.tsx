@@ -1,9 +1,10 @@
 import { Button, Drawer, Form, Space } from 'antd';
-import { FC, forwardRef, useEffect, useMemo, useState } from 'react';
+import { FC, forwardRef, useEffect, useState } from 'react';
 import css from './index.module.less';
 import CommonConfig from './CommonConfig.tsx';
-import { onConfigChange, onWrapperStyleChange, useEditorStore } from '../../store/editStore.ts';
-import { Schema } from '../../types/schema.ts';
+import { useEditorStore } from '../../store/editStore.ts';
+import { onConfigChange, onWrapperStyleChange } from '../../store/actions.ts';
+import { getSelectedComponents } from '../../store/helper.ts';
 
 interface RightPanelConfig {
   Config?: FC<any>;
@@ -11,18 +12,19 @@ interface RightPanelConfig {
 
 const RightPanel = forwardRef<HTMLDivElement, RightPanelConfig>((props, ref) => {
   const { Config } = props;
-  const { computed: { selectedComponents } } = useEditorStore();
   const [form] = Form.useForm();
-  const component = useMemo(() => {
-    return selectedComponents?.[0] || {} as Schema;
-  }, [selectedComponents]);
+  const getComponent = () => {
+    const selectedComponents = getSelectedComponents(useEditorStore.getState());
+    return selectedComponents[0] ?? {};
+  };
+  const component = getComponent();
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
     setOpen(true);
   };
   useEffect(() => {
     form.setFieldsValue({ ...component.props?.config, wrapperStyle: component.wrapperStyle });
-  }, [component]);
+  }, [component.props, component.wrapperStyle]);
   const onClose = () => {
     setOpen(false);
   };

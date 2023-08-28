@@ -1,10 +1,11 @@
 import css from './index.module.less';
 import cls from 'classnames';
-import { updateSelectedComponentsDimensions, useEditorStore } from '../../store/editStore.ts';
+import { useEditorStore } from '../../store/editStore.ts';
 import { throttle } from 'lodash-es';
 import { Direction } from './types.ts';
 import React from 'react';
 import { getAbsMaxValues } from '../../shared/utils.ts';
+import { updateSelectedComponentsDimensions } from '../../store/actions.ts';
 
 const StretchControls = () => {
   const { zoom } = useEditorStore();

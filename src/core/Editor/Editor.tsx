@@ -1,11 +1,13 @@
 import LeftPanel from '../LeftPanel/LeftPanel.tsx';
 import css from './editor.module.less';
-import { clearSelected, useEditorStore } from '@/store/editStore.ts';
+import { useEditorStore } from '@/store/editStore.ts';
 import React, { useEffect, useRef } from 'react';
 import ComponentContainer from '../ComponentContainer/ComponentContainer.tsx';
 import OuterBox from '../OuterBox';
 import Scale from '../Scale';
 import RightPanel from '../RightPanel';
+import { clearSelected } from '../../store/actions.ts';
+import { getSelectedComponents } from '../../store/helper.ts';
 
 const Editor = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -16,8 +18,9 @@ const Editor = () => {
     setDragItem,
     zoom,
     canvasConfig,
-    computed: { selectedComponents }
   } = useEditorStore();
+  const selectedComponents = getSelectedComponents(useEditorStore.getState());
+
   const containerRef = useRef<any>({});
   const outerBoxRef = useRef<HTMLDivElement>(null);
   useEffect(() => {

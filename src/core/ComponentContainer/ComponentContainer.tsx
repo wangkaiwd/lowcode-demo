@@ -1,8 +1,9 @@
 import { ComponentProps, forwardRef } from 'react';
 import css from './componentContainer.module.less';
 import cls from 'classnames';
-import { onChangeSelected, useEditorStore } from '../../store/editStore.ts';
+import { useEditorStore } from '../../store/editStore.ts';
 import { useMove } from '../../hooks/useMove.tsx';
+import { onChangeSelected } from '../../store/actions.ts';
 
 interface ComponentContainerProps extends ComponentProps<'div'> {
   id: string;

@@ -3,10 +3,10 @@ import { useEditorStore } from '../../store/editStore.ts';
 import { forwardRef, useMemo } from 'react';
 import { useMove } from '../../hooks/useMove.tsx';
 import StretchControls from '../StretchControls';
+import { getSelectedComponents } from '../../store/helper.ts';
 
 const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
-  const { computed } = useEditorStore();
-  const { selectedComponents } = computed;
+  const selectedComponents = getSelectedComponents(useEditorStore.getState());
   const { onMouseDown } = useMove();
   const outerStyle = useMemo(() => {
     if (!selectedComponents.length) {return { display: 'none' };}

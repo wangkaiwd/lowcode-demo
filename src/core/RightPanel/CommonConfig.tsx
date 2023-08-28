@@ -15,6 +15,18 @@ const CommonConfig = () => {
       >
         <InputNumber/>
       </Form.Item>
+      <Form.Item
+        label="垂直位置"
+        name={['wrapperStyle', 'top']}
+      >
+        <InputNumber/>
+      </Form.Item>
+      <Form.Item
+        label="水平位置"
+        name={['wrapperStyle', 'left']}
+      >
+        <InputNumber/>
+      </Form.Item>
     </>
   );
 };

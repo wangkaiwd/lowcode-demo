@@ -1,6 +1,7 @@
 import { Col, InputNumber, Row, Slider } from 'antd';
-import { onZoomChange, useEditorStore } from '../../store/editStore.ts';
+import { useEditorStore } from '../../store/editStore.ts';
 import { forwardRef } from 'react';
+import { onZoomChange } from '../../store/actions.ts';
 
 const Scale = forwardRef<HTMLDivElement>((_props, ref) => {
   const { zoom } = useEditorStore();

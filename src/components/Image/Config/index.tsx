@@ -2,14 +2,14 @@ import { Form, Input } from 'antd';
 
 const Config = () => {
   return (
-    <div>
+    <>
       <Form.Item
-        name={'url'}
+        name={'src'}
         label={'图片url'}
       >
         <Input/>
       </Form.Item>
-    </div>
+    </>
   );
 };
 

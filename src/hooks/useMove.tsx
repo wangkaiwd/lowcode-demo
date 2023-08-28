@@ -1,7 +1,9 @@
 import { useMemoizedFn } from './useMemoizedFn.ts';
 import { throttle } from 'lodash-es';
-import { updateComponentByUid, useEditorStore } from '../store/editStore.ts';
+import { useEditorStore } from '../store/editStore.ts';
 import React, { useRef } from 'react';
+
+import { getSelectedComponents, updateComponentByUid } from '../store/helper.ts';
 
 interface StartCoordinate {
   startX: number;
@@ -13,8 +15,7 @@ interface UseMoveOptions {
 }
 
 export const useMove = (options: UseMoveOptions = {}) => {
-  const { selectedKeys, computed, zoom } = useEditorStore();
-  const { componentsMap } = computed;
+  const { zoom } = useEditorStore();
   const startCoordinate = useRef<StartCoordinate | null>(null);
   const onMove = useMemoizedFn(throttle((e: MouseEvent) => {
     if (!startCoordinate.current) {
@@ -24,11 +25,11 @@ export const useMove = (options: UseMoveOptions = {}) => {
     const { clientX, clientY } = e;
     const distanceX = (clientX - startX) / zoom;
     const distanceY = (clientY - startY) / zoom;
-    selectedKeys.forEach(key => {
-      const component = componentsMap[key];
+    const selectedComponents = getSelectedComponents(useEditorStore.getState());
+    selectedComponents.forEach(component => {
       if (component && component.wrapperStyle) {
         const { left, top } = component.wrapperStyle;
-        updateComponentByUid(key, {
+        updateComponentByUid(component.uid, {
           wrapperStyle: {
             left: left as number + distanceX,
             top: top as number + distanceY
