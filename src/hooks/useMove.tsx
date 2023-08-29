@@ -27,7 +27,7 @@ export const useMove = (options: UseMoveOptions = {}) => {
     const distanceY = (clientY - startY) / zoom;
     const selectedComponents = getSelectedComponents(useEditorStore.getState());
     selectedComponents.forEach(component => {
-      if (component && component.wrapperStyle) {
+      if (component.wrapperStyle) {
         const { left, top } = component.wrapperStyle;
         updateComponentByUid(component.uid, {
           wrapperStyle: {

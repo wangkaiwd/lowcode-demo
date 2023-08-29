@@ -1,5 +1,5 @@
 import { Button, Drawer, Form, Space } from 'antd';
-import { FC, forwardRef, useEffect, useState } from 'react';
+import { FC, forwardRef, useState } from 'react';
 import css from './index.module.less';
 import CommonConfig from './CommonConfig.tsx';
 import { useEditorStore } from '../../store/editStore.ts';
@@ -20,11 +20,9 @@ const RightPanel = forwardRef<HTMLDivElement, RightPanelConfig>((props, ref) => 
   const component = getComponent();
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
+    form.setFieldsValue({ ...component.props?.config, wrapperStyle: component.wrapperStyle });
     setOpen(true);
   };
-  useEffect(() => {
-    form.setFieldsValue({ ...component.props?.config, wrapperStyle: component.wrapperStyle });
-  }, [component.props, component.wrapperStyle]);
   const onClose = () => {
     setOpen(false);
   };
