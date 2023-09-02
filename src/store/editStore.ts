@@ -4,7 +4,7 @@ import { EditorStore } from '@/store/editStoreTypes.ts';
 import { titleSchema } from '@/components/Title/schema.tsx';
 import { imageSchema } from '@/components/Image/schema.tsx';
 
-export const useEditorStore = create(immer<EditorStore>((setState, _getState) => {
+export const useEditorStore = create(immer<EditorStore>((setState) => {
   return {
     zoom: 1,
     components: [],

@@ -25,9 +25,7 @@ const Editor = () => {
   const outerBoxRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const listenDocument = (e: Event) => {
-      if (!canvasRef.current?.contains(e.target as HTMLDivElement)) {
-        return;
-      }
+      if (!canvasRef.current?.contains(e.target as HTMLDivElement)) return;
       const notContains = Object.entries(containerRef.current).every(([, v]: any) => {
         return !v.contains(e.target);
       });

@@ -15,9 +15,9 @@ const ComponentContainer = forwardRef<HTMLDivElement, ComponentContainerProps>((
   children,
   id
 }, ref) => {
-  const { selectedKeys } = useEditorStore();
+  const { selectedKeys, zoom } = useEditorStore();
   const selected = selectedKeys.has(id);
-  const { onMouseDown } = useMove({ onMouseDown: () => onChangeSelected(id) });
+  const { onMouseDown } = useMove({ onMouseDown: () => onChangeSelected(id), zoom });
   const onClick = () => {
     onChangeSelected(id);
   };

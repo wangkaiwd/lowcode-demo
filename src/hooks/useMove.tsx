@@ -1,9 +1,8 @@
 import { useMemoizedFn } from './useMemoizedFn.ts';
 import { throttle } from 'lodash-es';
-import { useEditorStore } from '../store/editStore.ts';
 import React, { useRef } from 'react';
 
-import { getSelectedComponents, updateComponentByUid } from '../store/helper.ts';
+import { updateSelectedComponents } from '../store/helper.ts';
 
 interface StartCoordinate {
   startX: number;
@@ -12,10 +11,11 @@ interface StartCoordinate {
 
 interface UseMoveOptions {
   onMouseDown?: (e: React.MouseEvent) => void;
+  zoom?: number;
 }
 
 export const useMove = (options: UseMoveOptions = {}) => {
-  const { zoom } = useEditorStore();
+  const { zoom = 1 } = options;
   const startCoordinate = useRef<StartCoordinate | null>(null);
   const onMove = useMemoizedFn(throttle((e: MouseEvent) => {
     if (!startCoordinate.current) {
@@ -25,17 +25,15 @@ export const useMove = (options: UseMoveOptions = {}) => {
     const { clientX, clientY } = e;
     const distanceX = (clientX - startX) / zoom;
     const distanceY = (clientY - startY) / zoom;
-    const selectedComponents = getSelectedComponents(useEditorStore.getState());
-    selectedComponents.forEach(component => {
-      if (component.wrapperStyle) {
-        const { left, top } = component.wrapperStyle;
-        updateComponentByUid(component.uid, {
-          wrapperStyle: {
-            left: left as number + distanceX,
-            top: top as number + distanceY
-          }
-        });
-      }
+    updateSelectedComponents((preProps) => {
+      if (!preProps.wrapperStyle) {return {};}
+      const { left, top } = preProps.wrapperStyle;
+      return {
+        wrapperStyle: {
+          left: left as number + distanceX,
+          top: top as number + distanceY
+        }
+      };
     });
     startCoordinate.current = {
       startX: clientX,
@@ -51,7 +49,7 @@ export const useMove = (options: UseMoveOptions = {}) => {
     };
     options.onMouseDown?.(e);
     // avoid image move affect
-    e.preventDefault();
+    // e.preventDefault();
     const onUp = () => {
       startCoordinate.current = null;
       document.removeEventListener('mousemove', onMove);

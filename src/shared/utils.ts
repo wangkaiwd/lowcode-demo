@@ -34,3 +34,7 @@ export const getAbsMaxValues = (number1: number, number2: number) => {
     }
   }
 };
+
+export const isFunction = (value: any) => {
+  return typeof value === 'function';
+};

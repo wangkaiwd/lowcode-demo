@@ -7,7 +7,8 @@ import { getSelectedComponents } from '../../store/helper.ts';
 
 const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
   const selectedComponents = getSelectedComponents(useEditorStore.getState());
-  const { onMouseDown } = useMove();
+  const { zoom } = useEditorStore();
+  const { onMouseDown } = useMove({ zoom });
   const outerStyle = useMemo(() => {
     if (!selectedComponents.length) {return { display: 'none' };}
     let minLeft = 99999, minTop = 99999, maxLeftWithWidth = 0, maxTopWithHeight = 0;
