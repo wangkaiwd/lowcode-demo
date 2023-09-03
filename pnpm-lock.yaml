@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@ant-design/cssinjs': ^1.10.1
+  '@ant-design/icons': ^5.2.6
   '@types/lodash-es': ^4.17.7
   '@types/node': ^20.3.1
   '@types/react': ^18.0.37
@@ -27,6 +28,7 @@ specifiers:
 
 dependencies:
   '@ant-design/cssinjs': 1.10.1_biqbaboplfbrettd7655fr4n2y
+  '@ant-design/icons': 5.2.6_biqbaboplfbrettd7655fr4n2y
   antd: 5.6.1_biqbaboplfbrettd7655fr4n2y
   classnames: 2.3.2
   immer: 10.0.2
@@ -77,19 +79,19 @@ packages:
       stylis: 4.2.0
     dev: false
 
-  /@ant-design/icons-svg/4.2.1:
-    resolution: {integrity: sha512-EB0iwlKDGpG93hW8f85CTJTs4SvMX7tt5ceupvhALp1IF44SeUFOMhKUOYqpsoYWQKAOuTRDMqn75rEaKDp0Xw==}
+  /@ant-design/icons-svg/4.3.1:
+    resolution: {integrity: sha512-4QBZg8ccyC6LPIRii7A0bZUk3+lEDCLnhB+FVsflGdcWPPmV+j3fire4AwwoqHV/BibgvBmR9ZIo4s867smv+g==}
     dev: false
 
-  /@ant-design/icons/5.1.4_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-YHKL7Jx3bM12OxvtiYDon04BsBT/6LGitYEqar3GljzWaAyMOAD8i/uF1Rsi5Us/YNdWWXBGSvZV2OZWMpJlcA==}
+  /@ant-design/icons/5.2.6_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-4wn0WShF43TrggskBJPRqCD0fcHbzTYjnaoskdiJrVHg86yxoZ8ZUqsXvyn4WUqehRiFKnaclOhqk9w4Ui2KVw==}
     engines: {node: '>=8'}
     peerDependencies:
       react: '>=16.0.0'
       react-dom: '>=16.0.0'
     dependencies:
       '@ant-design/colors': 7.0.0
-      '@ant-design/icons-svg': 4.2.1
+      '@ant-design/icons-svg': 4.3.1
       '@babel/runtime': 7.22.5
       classnames: 2.3.2
       rc-util: 5.33.1_biqbaboplfbrettd7655fr4n2y
@@ -850,7 +852,7 @@ packages:
     dependencies:
       '@ant-design/colors': 7.0.0
       '@ant-design/cssinjs': 1.10.1_biqbaboplfbrettd7655fr4n2y
-      '@ant-design/icons': 5.1.4_biqbaboplfbrettd7655fr4n2y
+      '@ant-design/icons': 5.2.6_biqbaboplfbrettd7655fr4n2y
       '@ant-design/react-slick': 1.0.1_react@18.2.0
       '@babel/runtime': 7.22.5
       '@ctrl/tinycolor': 3.6.0

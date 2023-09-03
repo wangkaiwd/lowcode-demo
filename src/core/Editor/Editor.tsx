@@ -2,7 +2,7 @@ import LeftPanel from '../LeftPanel/LeftPanel.tsx';
 import css from './editor.module.less';
 import { useEditorStore } from '@/store/editStore.ts';
 import React, { useEffect, useRef } from 'react';
-import ComponentContainer from '../ComponentContainer/ComponentContainer.tsx';
+import Blocker from '../Blocker';
 import OuterBox from '../OuterBox';
 import Scale from '../Scale';
 import RightPanel from '../RightPanel';
@@ -81,14 +81,14 @@ const Editor = () => {
               components.map((componentSchema) => {
                 const Component = componentSchema.type;
                 return (
-                  <ComponentContainer
+                  <Blocker
                     ref={(ref) => containerRef.current[componentSchema.uid] = ref}
                     id={componentSchema.uid}
                     key={componentSchema.uid}
                     style={componentSchema.wrapperStyle}
                   >
                     <Component {...componentSchema.props} className={css.component}/>
-                  </ComponentContainer>
+                  </Blocker>
                 );
               })
             }

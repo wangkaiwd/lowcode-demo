@@ -1,5 +1,5 @@
 import { ComponentProps, forwardRef } from 'react';
-import css from './componentContainer.module.less';
+import css from './index.module.less';
 import cls from 'classnames';
 import { useEditorStore } from '../../store/editStore.ts';
 import { useMove } from '../../hooks/useMove.tsx';
@@ -9,7 +9,7 @@ interface ComponentContainerProps extends ComponentProps<'div'> {
   id: string;
 }
 
-const ComponentContainer = forwardRef<HTMLDivElement, ComponentContainerProps>(({
+const Blocker = forwardRef<HTMLDivElement, ComponentContainerProps>(({
   style,
   className,
   children,
@@ -25,7 +25,7 @@ const ComponentContainer = forwardRef<HTMLDivElement, ComponentContainerProps>((
     <div
       ref={ref}
       onMouseDown={onMouseDown}
-      className={cls(css.componentContainer, className, { [css.selected]: selected })}
+      className={cls(css.blocker, className, { [css.selected]: selected })}
       style={style}
       onClick={onClick}
     >
@@ -34,4 +34,4 @@ const ComponentContainer = forwardRef<HTMLDivElement, ComponentContainerProps>((
   );
 });
 
-export default ComponentContainer;
+export default Blocker;

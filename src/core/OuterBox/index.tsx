@@ -4,6 +4,7 @@ import { forwardRef, useMemo } from 'react';
 import { useMove } from '../../hooks/useMove.tsx';
 import StretchControls from '../StretchControls';
 import { getSelectedComponents } from '../../store/helper.ts';
+import Rotator from '../Rotator';
 
 const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
   const selectedComponents = getSelectedComponents(useEditorStore.getState());
@@ -12,6 +13,7 @@ const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
   const outerStyle = useMemo(() => {
     if (!selectedComponents.length) {return { display: 'none' };}
     let minLeft = 99999, minTop = 99999, maxLeftWithWidth = 0, maxTopWithHeight = 0;
+    const selectedComponent = selectedComponents[0];
     for (let i = 0; i < selectedComponents.length; i++) {
       const current = selectedComponents[i];
       if (current.wrapperStyle) {
@@ -19,7 +21,7 @@ const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
           left,
           top,
           width,
-          height
+          height,
         } = current.wrapperStyle;
         minLeft = Math.min(minLeft, left as number || 0);
         minTop = Math.min(minTop, top as number || 0);
@@ -30,6 +32,7 @@ const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
     return {
       left: minLeft,
       top: minTop,
+      transform: selectedComponent.wrapperStyle?.transform,
       width: maxLeftWithWidth - minLeft,
       height: maxTopWithHeight - minTop
     };
@@ -38,6 +41,7 @@ const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
   return (
     <div ref={ref} className={css.outerBox} style={outerStyle} onMouseDown={onMouseDown}>
       <StretchControls/>
+      <Rotator/>
     </div>
   );
 });

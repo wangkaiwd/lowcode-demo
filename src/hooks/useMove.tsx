@@ -39,7 +39,7 @@ export const useMove = (options: UseMoveOptions = {}) => {
       startX: clientX,
       startY: clientY
     };
-  }, 10));
+  }, 20));
 
   const onMouseDown = (e: React.MouseEvent) => {
     const { clientX: startX, clientY: startY } = e;
