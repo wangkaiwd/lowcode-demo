@@ -23,14 +23,14 @@ export const getSelectedComponent = (editorStore: EditorStore) => {
   return selectedComponents[0];
 };
 type SetNewProps = (preProps: InternalComponent) => Partial<InternalComponent>
+
 export function updateSelectedComponents (setNewProps: SetNewProps): void
 export function updateSelectedComponents (newProps: Partial<InternalComponent>): void
 export function updateSelectedComponents (newProps: any) {
   useEditorStore.setState((draft) => {
-    const componentsMap = createComponentsMap(draft);
     const selectedComponents = getSelectedComponents(draft);
     selectedComponents.map(component => {
-      componentsMap[component.uid] = merge(component, isFunction(newProps) ? newProps(component) : newProps);
+      merge(component, isFunction(newProps) ? newProps(component) : newProps);
     });
   });
 }

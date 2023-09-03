@@ -14,6 +14,8 @@ const StretchControls = () => {
     e.stopPropagation();
     // update resize position and size
     const onMouseMove = throttle((e: MouseEvent) => {
+      // pointerEvent
+      document.documentElement.style.pointerEvents = 'none';
       const { clientX, clientY } = e;
       const rawDeltaX = (clientX - startX) / zoom;
       const rawDeltaY = (clientY - startY) / zoom;
@@ -36,6 +38,7 @@ const StretchControls = () => {
       startY = clientY;
     }, 10);
     const onMouseUp = () => {
+      document.documentElement.style.pointerEvents = 'auto';
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
