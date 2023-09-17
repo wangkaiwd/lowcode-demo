@@ -1,9 +1,11 @@
 import Title from './Title';
 import Image from './Image';
+import Button from '@/components/Button';
 
 const componentsMap = {
   Title,
-  Image
+  Image,
+  Button
 };
 
 export default componentsMap;

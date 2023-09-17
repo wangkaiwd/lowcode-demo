@@ -22,12 +22,12 @@ const Editor = () => {
   } = useEditorStore();
   const selectedComponents = getSelectedComponents(useEditorStore.getState());
 
-  const containerRef = useRef<any>({});
+  const blockerRef = useRef<any>({});
   const outerBoxRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const listenDocument = (e: Event) => {
       if (!canvasRef.current?.contains(e.target as HTMLDivElement)) return;
-      const notContains = Object.entries(containerRef.current).every(([, v]: any) => {
+      const notContains = Object.entries(blockerRef.current).every(([, v]: any) => {
         return !v.contains(e.target);
       });
       if (notContains && !outerBoxRef.current?.contains(e.target as HTMLDivElement)) {
@@ -49,12 +49,9 @@ const Editor = () => {
     const componentTop = clientY - top;
     addComponent({
       ...dragItem,
-      el: containerRef.current[dragItem.uid],
       wrapperStyle: {
         left: componentLeft,
         top: componentTop,
-        width: 100,
-        height: 100
       }
     });
     setDragItem();
@@ -86,8 +83,10 @@ const Editor = () => {
                   <Blocker
                     ref={(ref) => {
                       if (!ref) return;
-                      updateComponent(componentSchema.uid, { el: ref });
-                      containerRef.current[componentSchema.uid] = ref;
+                      blockerRef.current[componentSchema.uid] = ref;
+                      if (componentSchema.el) {return;}
+                      const { width, height } = ref.getBoundingClientRect();
+                      updateComponent(componentSchema.uid, { el: ref, wrapperStyle: { width, height } });
                     }}
                     id={componentSchema.uid}
                     key={componentSchema.uid}

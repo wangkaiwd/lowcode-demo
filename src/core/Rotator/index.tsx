@@ -6,7 +6,8 @@ import { useThrottleFn } from '../../hooks/useThtottleFn.tsx';
 import { useEditorStore } from '@/store/editStore.ts';
 import { getRotateDeg } from '@/shared/transform.ts';
 
-// thinking:
+// thinking: 跨象限的时候，刚好 负旋转角度和正旋转角度视觉效果相同
+// https://excalidraw.com/#json=j7oC2h-V1UaaUZB5qOZec,jSjBjs5nElI1dlvGCxiYzw
 // Math.atan2
 const Rotator = () => {
   const store = useEditorStore();
@@ -17,9 +18,6 @@ const Rotator = () => {
     const curY = e.clientY;
     const { oX, oY, startDeg, beforeDeg } = cursorRef.current;
     const afterDeg = getAtan2Degree(curY - oY, curX - oX);
-    // console.log('startDeg', startDeg);
-    // console.log('beforeDeg', beforeDeg);
-    // console.log('afterDeg', afterDeg);
     const deg = startDeg + afterDeg - beforeDeg;
     updateSelectedComponents({
       wrapperStyle: {

@@ -5,6 +5,7 @@ import CommonConfig from './CommonConfig.tsx';
 import { useEditorStore } from '../../store/editStore.ts';
 import { onConfigChange, onWrapperStyleChange } from '../../store/actions.ts';
 import { getSelectedComponents } from '../../store/helper.ts';
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 
 interface RightPanelConfig {
   Config?: FC<any>;
@@ -39,9 +40,18 @@ const RightPanel = forwardRef<HTMLDivElement, RightPanelConfig>((props, ref) => 
   };
   return (
     <div className={css.rightPanel} ref={ref}>
-      <Button type="primary" onClick={showDrawer}>
-        打开属性面板
-      </Button>
+      <Space>
+        <Button type="primary" size={'small'} onClick={showDrawer}>
+          属性面板
+        </Button>
+        <Button type="primary" size={'small'} onClick={showDrawer} icon={<ArrowLeftOutlined/>}>
+          后退
+        </Button>
+        <Button type="primary" size={'small'} onClick={showDrawer} icon={<ArrowRightOutlined/>}>
+          前进
+        </Button>
+      </Space>
+
       <Drawer
         key={component.key}
         title="修改属性"

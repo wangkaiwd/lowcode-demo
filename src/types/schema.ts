@@ -6,7 +6,7 @@ export interface Schema<T = any> {
   type: FC<any>;
   ConfigView?: FC<any>;
   wrapperStyle?: CSSProperties;
-  props: {
+  props?: {
     config?: Record<string, any>;
   } & T;
 }

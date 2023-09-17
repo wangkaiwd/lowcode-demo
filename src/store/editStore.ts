@@ -3,6 +3,7 @@ import { immer } from 'zustand/middleware/immer';
 import { EditorStore } from '@/store/editStoreTypes.ts';
 import { titleSchema } from '@/components/Title/schema.tsx';
 import { imageSchema } from '@/components/Image/schema.tsx';
+import { buttonSchema } from '@/components/Button/schema.tsx';
 import { createComponentsMap } from '@/store/helper.ts';
 import { merge } from 'lodash-es';
 
@@ -25,6 +26,10 @@ export const useEditorStore = create(immer<EditorStore>((setState) => {
       {
         group: '图片',
         elements: [imageSchema]
+      },
+      {
+        group: '按钮',
+        elements: [buttonSchema]
       }
     ],
     addComponent: (component) => {
