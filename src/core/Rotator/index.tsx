@@ -4,64 +4,63 @@ import { getSelectedComponent, updateSelectedComponents } from '@/store/helper.t
 import css from './index.module.less';
 import { useThrottleFn } from '../../hooks/useThtottleFn.tsx';
 import { useEditorStore } from '@/store/editStore.ts';
+import { getRotateDeg } from '@/shared/transform.ts';
 
-const getRotateDeg = (transform: string) => {
-  const reg = /rotate\((d)+deg\)/;
-  const matched = reg.exec(transform);
-  if (matched) {
-    return Number(matched[1]);
-  }
-  return 0;
-};
-
+// thinking:
+// Math.atan2
 const Rotator = () => {
   const store = useEditorStore();
   const cursorRef = useRef<any>(null);
   const selectedComponent = getSelectedComponent(store);
   const onMouseMove = (e: MouseEvent) => {
-    const { startX, startY } = cursorRef.current;
-    if (selectedComponent.wrapperStyle) {
-      const x = e.pageX;
-      const y = e.pageY;
-
-      const disX = x - startX;
-      const disY = y - startY;
-
-      // Math.atan() 函数返回一个数值的反正切（以弧度为单位），一个-π/2到π/2弧度之间的数值。
-      // 弧度变角度 180/ π*弧度
-      let deg = Math.atan2(disY, disX) * 180 / Math.PI - 90;
-      deg = Math.ceil(deg);
-      updateSelectedComponents({
-        wrapperStyle: {
-          transform: `rotate(${deg}deg)`
-        }
-      });
-    }
+    const curX = e.clientX;
+    const curY = e.clientY;
+    const { oX, oY, startDeg, beforeDeg } = cursorRef.current;
+    const afterDeg = getAtan2Degree(curY - oY, curX - oX);
+    // console.log('startDeg', startDeg);
+    // console.log('beforeDeg', beforeDeg);
+    // console.log('afterDeg', afterDeg);
+    const deg = startDeg + afterDeg - beforeDeg;
+    updateSelectedComponents({
+      wrapperStyle: {
+        transform: `rotate(${deg}deg)`
+      }
+    });
   };
-  const throttledOnMouseMove = useThrottleFn(onMouseMove, { wait: 0 });
+  const getAtan2Degree = (y: number, x: number) => {
+    return Math.atan2(y, x) * 180 / Math.PI;
+  };
+  const throttledOnMouseMove = useThrottleFn(onMouseMove, { wait: 50 });
   const onMouseDown = (e: React.MouseEvent) => {
     document.documentElement.style.pointerEvents = 'none';
     e.stopPropagation();
-    const { pageX, pageY } = e;
-    const { height, transform }: any = selectedComponent.wrapperStyle;
-    const rotate = getRotateDeg(transform);
-    const angle = ((rotate + 90) * Math.PI) / 180;
+    const { clientX, clientY } = e;
+    const { el, wrapperStyle }: any = selectedComponent;
+    // noted: wrapperStyle top,left relative to canvas
+    // here we need coordinate relative to viewport (because mouse event clientX,clientY)
+    if (el && wrapperStyle) {
+      const { transform } = wrapperStyle;
+      const { left, top, width, height } = el.getBoundingClientRect();
+      const oX = left + width / 2;
+      const oY = top + height / 2;
+      // calculate offset position
+      // ensure start point is y axis
+      cursorRef.current = {
+        startX: clientX,
+        startY: clientY,
+        oX,
+        oY,
+        startDeg: getRotateDeg(transform),
+        beforeDeg: getAtan2Degree(clientY - oY, clientX - oX)
+      };
+    }
 
-    const radius = height / 2;
-    const [offsetX, offsetY] = [
-      -Math.cos(angle) * radius,
-      -Math.sin(angle) * radius,
-    ];
-    cursorRef.current = {
-      startX: pageX + offsetX,
-      startY: pageY + offsetY
-    };
     const onUp = () => {
-      document.documentElement.style.pointerEvents = 'auto';
-      cursorRef.current = null;
       document.removeEventListener('mousemove', throttledOnMouseMove);
       document.removeEventListener('mouseup', onUp);
       document.removeEventListener('mouseleave', onUp);
+      document.documentElement.style.pointerEvents = 'auto';
+      cursorRef.current = null;
     };
     document.addEventListener('mousemove', throttledOnMouseMove);
     document.addEventListener('mouseup', onUp);

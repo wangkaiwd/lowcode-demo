@@ -3,6 +3,8 @@ import { immer } from 'zustand/middleware/immer';
 import { EditorStore } from '@/store/editStoreTypes.ts';
 import { titleSchema } from '@/components/Title/schema.tsx';
 import { imageSchema } from '@/components/Image/schema.tsx';
+import { createComponentsMap } from '@/store/helper.ts';
+import { merge } from 'lodash-es';
 
 export const useEditorStore = create(immer<EditorStore>((setState) => {
   return {
@@ -28,6 +30,15 @@ export const useEditorStore = create(immer<EditorStore>((setState) => {
     addComponent: (component) => {
       setState((state) => {
         state.components.push(component);
+      });
+    },
+    updateComponent: (uid, nextProps) => {
+      setState((state) => {
+        const componentsMap = createComponentsMap(state);
+        const component = componentsMap[uid];
+        if (component) {
+          merge(component, nextProps);
+        }
       });
     },
     setDragItem: (dragItem) => {

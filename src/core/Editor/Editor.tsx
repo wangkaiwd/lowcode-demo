@@ -14,6 +14,7 @@ const Editor = () => {
   const {
     components,
     addComponent,
+    updateComponent,
     dragItem,
     setDragItem,
     zoom,
@@ -48,6 +49,7 @@ const Editor = () => {
     const componentTop = clientY - top;
     addComponent({
       ...dragItem,
+      el: containerRef.current[dragItem.uid],
       wrapperStyle: {
         left: componentLeft,
         top: componentTop,
@@ -82,7 +84,11 @@ const Editor = () => {
                 const Component = componentSchema.type;
                 return (
                   <Blocker
-                    ref={(ref) => containerRef.current[componentSchema.uid] = ref}
+                    ref={(ref) => {
+                      if (!ref) return;
+                      updateComponent(componentSchema.uid, { el: ref });
+                      containerRef.current[componentSchema.uid] = ref;
+                    }}
                     id={componentSchema.uid}
                     key={componentSchema.uid}
                     style={componentSchema.wrapperStyle}

@@ -7,6 +7,7 @@ export interface ListItem {
 
 export interface InternalComponent extends Schema {
   uid: string;
+  el?: any;
 }
 
 export interface EditorStoreState {
@@ -21,6 +22,7 @@ export interface EditorStoreState {
 export interface EditorStoreAction {
   addComponent: (component: InternalComponent) => void;
   setDragItem: (dragItem?: EditorStoreState['dragItem']) => void;
+  updateComponent: (uid: string, newProps: Partial<InternalComponent>) => void;
 }
 
 export type EditorStore = EditorStoreState & EditorStoreAction

@@ -36,7 +36,7 @@ const StretchControls = () => {
 
       startX = clientX;
       startY = clientY;
-    }, 10);
+    }, 50);
     const onMouseUp = () => {
       document.documentElement.style.pointerEvents = 'auto';
       document.removeEventListener('mousemove', onMouseMove);

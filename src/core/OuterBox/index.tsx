@@ -4,7 +4,7 @@ import { forwardRef, useMemo } from 'react';
 import { useMove } from '../../hooks/useMove.tsx';
 import StretchControls from '../StretchControls';
 import { getSelectedComponents } from '../../store/helper.ts';
-import Rotator from '../Rotator';
+import Rotator from '@/core/Rotator';
 
 const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
   const selectedComponents = getSelectedComponents(useEditorStore.getState());
