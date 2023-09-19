@@ -8,6 +8,7 @@ import Scale from '../Scale';
 import RightPanel from '../RightPanel';
 import { clearSelected } from '../../store/actions.ts';
 import { getSelectedComponents } from '../../store/helper.ts';
+import MarkerLines from '@/core/MarkerLines';
 
 const Editor = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -76,6 +77,7 @@ const Editor = () => {
             }}
           >
             <OuterBox ref={outerBoxRef}/>
+            <MarkerLines/>
             {
               components.map((componentSchema) => {
                 const Component = componentSchema.type;
