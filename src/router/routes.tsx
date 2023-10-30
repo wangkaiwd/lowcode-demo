@@ -12,12 +12,11 @@ export const routes = createBrowserRouter([
     children: [
       {
         index: true,
-        path: 'list',
-        element: <List/>
+        element: <Edit/>
       },
       {
-        path: 'edit',
-        element: <Edit/>
+        path: 'list',
+        element: <List/>
       }
     ]
   }
