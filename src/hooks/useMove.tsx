@@ -1,8 +1,7 @@
-import { useMemoizedFn } from './useMemoizedFn.ts';
-import { throttle } from 'lodash-es';
-import React, { useRef } from 'react';
+import React, { useRef } from 'react'
 
-import { updateSelectedComponents } from '../store/helper.ts';
+import { updateSelectedComponents } from '../store/helper.ts'
+import { useThrottleFn } from '@/hooks/useThtottleFn.tsx'
 
 interface StartCoordinate {
   startX: number;
@@ -15,52 +14,52 @@ interface UseMoveOptions {
 }
 
 export const useMove = (options: UseMoveOptions = {}) => {
-  const { zoom = 1 } = options;
-  const startCoordinate = useRef<StartCoordinate | null>(null);
-  const onMove = useMemoizedFn(throttle((e: MouseEvent) => {
+  const { zoom = 1 } = options
+  const startCoordinate = useRef<StartCoordinate | null>(null)
+  const onMove = useThrottleFn((e: MouseEvent) => {
     if (!startCoordinate.current) {
-      return;
+      return
     }
-    const { startX, startY } = startCoordinate.current;
-    const { clientX, clientY } = e;
-    const distanceX = (clientX - startX) / zoom;
-    const distanceY = (clientY - startY) / zoom;
+    const { startX, startY } = startCoordinate.current
+    const { clientX, clientY } = e
+    const distanceX = (clientX - startX) / zoom
+    const distanceY = (clientY - startY) / zoom
     updateSelectedComponents((preProps) => {
-      if (!preProps.wrapperStyle) {return {};}
-      const { left, top } = preProps.wrapperStyle;
+      if (!preProps.wrapperStyle) {return {}}
+      const { left, top } = preProps.wrapperStyle
       return {
         wrapperStyle: {
           left: left as number + distanceX,
           top: top as number + distanceY
         }
-      };
-    });
+      }
+    })
     startCoordinate.current = {
       startX: clientX,
       startY: clientY
-    };
-  }, 50));
+    }
+  }, { wait: 50 })
 
   const onMouseDown = (e: React.MouseEvent) => {
-    const { clientX: startX, clientY: startY } = e;
+    const { clientX: startX, clientY: startY } = e
     startCoordinate.current = {
       startX,
       startY
-    };
-    options.onMouseDown?.(e);
+    }
+    options.onMouseDown?.(e)
     // avoid image move affect
     // e.preventDefault();
     const onUp = () => {
-      startCoordinate.current = null;
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-      document.removeEventListener('mouseleave', onUp);
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-    document.addEventListener('mouseleave', onUp);
-  };
+      startCoordinate.current = null
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+      document.removeEventListener('mouseleave', onUp)
+    }
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+    document.addEventListener('mouseleave', onUp)
+  }
   return {
     onMouseDown
-  };
-};
+  }
+}
