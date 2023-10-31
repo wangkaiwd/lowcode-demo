@@ -1,17 +1,17 @@
-import LeftPanel from '../LeftPanel/LeftPanel.tsx';
-import css from './editor.module.less';
-import { useEditorStore } from '@/store/editStore.ts';
-import React, { useEffect, useRef } from 'react';
-import Blocker from '../Blocker';
-import OuterBox from '../OuterBox';
-import Scale from '../Scale';
-import RightPanel from '../RightPanel';
-import { clearSelected } from '../../store/actions.ts';
-import { getSelectedComponents } from '../../store/helper.ts';
-import MarkerLines from '@/core/MarkerLines';
+import LeftPanel from '../LeftPanel/LeftPanel.tsx'
+import css from './editor.module.less'
+import { useEditorStore } from '@/store/editStore.ts'
+import React, { useEffect, useRef } from 'react'
+import Blocker from '../Blocker'
+import OuterBox from '../OuterBox'
+import Scale from '../Scale'
+import RightPanel from '../RightPanel'
+import { clearSelected, onChangeSelected } from '../../store/actions.ts'
+import { getSelectedComponents } from '../../store/helper.ts'
+import MarkerLines from '@/core/MarkerLines'
 
 const Editor = () => {
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null)
   const {
     components,
     addComponent,
@@ -20,43 +20,44 @@ const Editor = () => {
     setDragItem,
     zoom,
     canvasConfig,
-  } = useEditorStore();
-  const selectedComponents = getSelectedComponents(useEditorStore.getState());
+  } = useEditorStore()
+  const selectedComponents = getSelectedComponents(useEditorStore.getState())
 
-  const blockerRef = useRef<any>({});
-  const outerBoxRef = useRef<HTMLDivElement>(null);
+  const blockerRef = useRef<any>({})
+  const outerBoxRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const listenDocument = (e: Event) => {
-      if (!canvasRef.current?.contains(e.target as HTMLDivElement)) return;
+      if (!canvasRef.current?.contains(e.target as HTMLDivElement)) return
       const notContains = Object.entries(blockerRef.current).every(([, v]: any) => {
-        return !v.contains(e.target);
-      });
+        return !v.contains(e.target)
+      })
       if (notContains && !outerBoxRef.current?.contains(e.target as HTMLDivElement)) {
-        clearSelected();
+        clearSelected()
       }
-    };
-    document.addEventListener('click', listenDocument);
+    }
+    document.addEventListener('click', listenDocument)
     return () => {
-      document.removeEventListener('click', listenDocument);
-    };
-  }, [components]);
+      document.removeEventListener('click', listenDocument)
+    }
+  }, [components])
 
   const onDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (!dragItem || !canvasRef.current) return;
-    const { left, top } = canvasRef.current.getBoundingClientRect();
-    const { clientX, clientY } = e;
-    const componentLeft = clientX - left;
-    const componentTop = clientY - top;
+    e.preventDefault()
+    if (!dragItem || !canvasRef.current) return
+    const { left, top } = canvasRef.current.getBoundingClientRect()
+    const { clientX, clientY } = e
+    const componentLeft = clientX - left
+    const componentTop = clientY - top
     addComponent({
       ...dragItem,
       wrapperStyle: {
         left: componentLeft,
         top: componentTop,
       }
-    });
-    setDragItem();
-  };
+    })
+    setDragItem()
+    onChangeSelected(dragItem.uid)
+  }
   return (
     <div className={css.editor}>
       <div className={css.leftPanel}>
@@ -73,22 +74,22 @@ const Editor = () => {
             style={{ ...canvasConfig, transform: `scale(${zoom})` }}
             onDragOver={(e) => {
               // todo: must prevent browser, otherwise drop event can't execute
-              e.preventDefault();
+              e.preventDefault()
             }}
           >
             <OuterBox ref={outerBoxRef}/>
             <MarkerLines/>
             {
               components.map((componentSchema) => {
-                const Component = componentSchema.type;
+                const Component = componentSchema.type
                 return (
                   <Blocker
                     ref={(ref) => {
-                      if (!ref) return;
-                      blockerRef.current[componentSchema.uid] = ref;
-                      if (componentSchema.el) {return;}
-                      const { width, height } = ref.getBoundingClientRect();
-                      updateComponent(componentSchema.uid, { el: ref, wrapperStyle: { width, height } });
+                      if (!ref) return
+                      blockerRef.current[componentSchema.uid] = ref
+                      if (componentSchema.el) {return}
+                      const { width, height } = ref.getBoundingClientRect()
+                      updateComponent(componentSchema.uid, { el: ref, wrapperStyle: { width, height } })
                     }}
                     id={componentSchema.uid}
                     key={componentSchema.uid}
@@ -96,14 +97,14 @@ const Editor = () => {
                   >
                     <Component {...componentSchema.props} className={css.component}/>
                   </Blocker>
-                );
+                )
               })
             }
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Editor;
+export default Editor

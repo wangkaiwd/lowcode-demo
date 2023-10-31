@@ -1,9 +1,9 @@
-import { ComponentProps, forwardRef } from 'react';
-import css from './index.module.less';
-import cls from 'classnames';
-import { useEditorStore } from '../../store/editStore.ts';
-import { useMove } from '../../hooks/useMove.tsx';
-import { onChangeSelected } from '../../store/actions.ts';
+import { ComponentProps, forwardRef } from 'react'
+import css from './index.module.less'
+import cls from 'classnames'
+import { useEditorStore } from '../../store/editStore.ts'
+import { useMove } from '../../hooks/useMove.tsx'
+import { onChangeSelected } from '../../store/actions.ts'
 
 interface ComponentContainerProps extends ComponentProps<'div'> {
   id: string;
@@ -15,12 +15,12 @@ const Blocker = forwardRef<HTMLDivElement, ComponentContainerProps>(({
   children,
   id
 }, ref) => {
-  const { selectedKeys, zoom } = useEditorStore();
-  const selected = selectedKeys.has(id);
-  const { onMouseDown } = useMove({ onMouseDown: () => onChangeSelected(id), zoom });
+  const { selectedKeys, zoom } = useEditorStore()
+  const selected = selectedKeys.has(id)
+  const { onMouseDown } = useMove({ onMouseDown: () => onChangeSelected(id), zoom })
   const onClick = () => {
-    onChangeSelected(id);
-  };
+    onChangeSelected(id)
+  }
   return (
     <div
       ref={ref}
@@ -31,7 +31,7 @@ const Blocker = forwardRef<HTMLDivElement, ComponentContainerProps>(({
     >
       {children}
     </div>
-  );
-});
+  )
+})
 
-export default Blocker;
+export default Blocker

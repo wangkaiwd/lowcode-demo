@@ -1,8 +1,8 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useRef } from 'react'
 
-import { getSelectedComponents, updateSelectedComponents } from '../store/helper.ts'
+import { updateSelectedComponents } from '../store/helper.ts'
 import { useThrottleFn } from '@/hooks/useThtottleFn.tsx'
-import { useEditorStore } from '@/store/editStore.ts'
+import { useGetOuterStyle } from '@/core/Blocker/hooks.ts'
 
 interface StartCoordinate {
   startX: number;
@@ -19,34 +19,7 @@ interface UseMoveOptions {
 export const useMove = (options: UseMoveOptions = {}) => {
   const { zoom = 1 } = options
   const startCoordinate = useRef<StartCoordinate | null>(null)
-  const selectedComponents = getSelectedComponents(useEditorStore.getState())
-  const outerStyle = useMemo(() => {
-    if (!selectedComponents.length) {return { display: 'none' }}
-    let minLeft = 99999, minTop = 99999, maxLeftWithWidth = 0, maxTopWithHeight = 0
-    const selectedComponent = selectedComponents[0]
-    for (let i = 0; i < selectedComponents.length; i++) {
-      const current = selectedComponents[i]
-      if (current.wrapperStyle) {
-        const {
-          left,
-          top,
-          width,
-          height,
-        } = current.wrapperStyle
-        minLeft = Math.min(minLeft, left as number || 0)
-        minTop = Math.min(minTop, top as number || 0)
-        maxLeftWithWidth = Math.max(maxLeftWithWidth, (left as number) + (width as number))
-        maxTopWithHeight = Math.max(maxTopWithHeight, (top as number) + (height as number))
-      }
-    }
-    return {
-      left: minLeft,
-      top: minTop,
-      transform: selectedComponent.wrapperStyle?.transform,
-      width: maxLeftWithWidth - minLeft,
-      height: maxTopWithHeight - minTop
-    }
-  }, [selectedComponents])
+  const outerStyle = useGetOuterStyle()
   const onMove = useThrottleFn((e: MouseEvent) => {
     if (!startCoordinate.current) {
       return
@@ -67,13 +40,6 @@ export const useMove = (options: UseMoveOptions = {}) => {
   }, { wait: 20 })
 
   const onMouseDown = (e: React.MouseEvent) => {
-    const { clientX: startX, clientY: startY } = e
-    startCoordinate.current = {
-      startX,
-      startY,
-      startLeft: outerStyle.left!,
-      startTop: outerStyle.top!
-    }
     options.onMouseDown?.(e)
     // avoid image move affect
     // e.preventDefault();
@@ -86,6 +52,13 @@ export const useMove = (options: UseMoveOptions = {}) => {
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseup', onUp)
     document.addEventListener('mouseleave', onUp)
+    const { clientX: startX, clientY: startY } = e
+    startCoordinate.current = {
+      startX,
+      startY,
+      startLeft: outerStyle.left!,
+      startTop: outerStyle.top!
+    }
   }
   return {
     onMouseDown
