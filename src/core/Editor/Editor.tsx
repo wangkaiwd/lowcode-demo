@@ -6,7 +6,7 @@ import Blocker from '../Blocker'
 import OuterBox from '../OuterBox'
 import Scale from '../Scale'
 import RightPanel from '../RightPanel'
-import { clearSelected } from '../../store/actions.ts'
+import { clearSelected, onChangeSelected } from '../../store/actions.ts'
 import { getSelectedComponents } from '../../store/helper.ts'
 import MarkerLines from '@/core/MarkerLines'
 
@@ -56,6 +56,7 @@ const Editor = () => {
       }
     })
     setDragItem()
+    onChangeSelected(dragItem.uid)
   }
   return (
     <div className={css.editor}>
