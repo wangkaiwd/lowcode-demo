@@ -18,6 +18,14 @@ export const useGetOuterStyle = () => {
           width,
           height,
         } = current.wrapperStyle
+        if (!height || !width) {
+          return {
+            left: 0,
+            top: 0,
+            width: 0,
+            height: 0
+          }
+        }
         minLeft = Math.min(minLeft, left as number || 0)
         minTop = Math.min(minTop, top as number || 0)
         maxLeftWithWidth = Math.max(maxLeftWithWidth, (left as number) + (width as number))
