@@ -1,16 +1,17 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { EditorStore } from '@/store/editStoreTypes.ts';
-import { titleSchema } from '@/components/Title/schema.tsx';
-import { imageSchema } from '@/components/Image/schema.tsx';
-import { buttonSchema } from '@/components/Button/schema.tsx';
-import { createComponentsMap } from '@/store/helper.ts';
-import { merge } from 'lodash-es';
+import { create } from 'zustand'
+import { immer } from 'zustand/middleware/immer'
+import { EditorStore } from '@/store/editStoreTypes.ts'
+import { titleSchema } from '@/components/Title/schema.tsx'
+import { imageSchema } from '@/components/Image/schema.tsx'
+import { buttonSchema } from '@/components/Button/schema.tsx'
+import { createComponentsMap } from '@/store/helper.ts'
+import { merge } from 'lodash-es'
 
 export const useEditorStore = create(immer<EditorStore>((setState) => {
   return {
     zoom: 1,
     components: [],
+    linesCoordinate: {},
     canvasConfig: {
       width: 800,
       height: 600,
@@ -34,23 +35,31 @@ export const useEditorStore = create(immer<EditorStore>((setState) => {
     ],
     addComponent: (component) => {
       setState((state) => {
-        state.components.push(component);
-      });
+        state.components.push(component)
+      })
+    },
+    updateLinesCoordinate: (coordinate) => {
+      setState((state) => {
+        state.linesCoordinate = {
+          ...state.linesCoordinate,
+          ...coordinate
+        }
+      })
     },
     updateComponent: (uid, nextProps) => {
       setState((state) => {
-        const componentsMap = createComponentsMap(state);
-        const component = componentsMap[uid];
+        const componentsMap = createComponentsMap(state)
+        const component = componentsMap[uid]
         if (component) {
-          merge(component, nextProps);
+          merge(component, nextProps)
         }
-      });
+      })
     },
     setDragItem: (dragItem) => {
       setState((state) => {
-        state.dragItem = dragItem;
-      });
+        state.dragItem = dragItem
+      })
     },
-  };
-}));
+  }
+}))
 

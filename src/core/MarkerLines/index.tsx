@@ -1,32 +1,9 @@
 import css from './index.module.less'
 import { useEditorStore } from '@/store/editStore.ts'
-import { getSelectedComponent, updateSelectedComponents } from '@/store/helper.ts'
-import { useMemo } from 'react'
 
-const diff = 4
 const MarkerLines = () => {
   const storeState = useEditorStore()
-  const { components } = storeState
-  const selectedComponent = getSelectedComponent(storeState)
-  const linesCoordinate = useMemo(() => {
-    if (!selectedComponent) {
-      return null
-    }
-    for (let i = 0; i < components.length; i++) {
-      const component = components[i]
-      if (component.uid === selectedComponent.uid) {
-        continue
-      }
-      const { left: cmpLeft }: any = component.wrapperStyle
-      const { left: selectedCmpLeft }: any = selectedComponent.wrapperStyle
-      if (Math.abs(cmpLeft - selectedCmpLeft) <= diff) {
-        updateSelectedComponents({ wrapperStyle: { left: cmpLeft } })
-        return {
-          left: cmpLeft - 1
-        }
-      }
-    }
-  }, [components, selectedComponent])
+  const { linesCoordinate } = storeState
   return (
     <div className={css.markerLines}>
       {

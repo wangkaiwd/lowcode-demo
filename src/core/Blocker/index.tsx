@@ -17,7 +17,7 @@ const Blocker = forwardRef<HTMLDivElement, ComponentContainerProps>(({
 }, ref) => {
   const { selectedKeys, zoom } = useEditorStore()
   const selected = selectedKeys.has(id)
-  const { onMouseDown } = useMove({ onMouseDown: () => onChangeSelected(id), zoom })
+  const { onMouseDown } = useMove({ onMouseDown: () => onChangeSelected(id), zoom, autoAlign: true })
   const onClick = () => {
     onChangeSelected(id)
   }
