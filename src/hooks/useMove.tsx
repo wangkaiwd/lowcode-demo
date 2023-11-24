@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { CSSProperties, useRef } from 'react'
 import { map } from 'lodash-es'
 import { getSelectedComponent, updateSelectedComponentWrapperStyle } from '../store/helper.ts'
 import { useThrottleFn } from '@/hooks/useThtottleFn.tsx'
@@ -19,10 +19,42 @@ interface UseMoveOptions {
   autoAlign?: boolean
 }
 
-// bug: how to update style correctly
+const createYLineMap = (targetStyle: CSSProperties, selectedStyle: CSSProperties) => {
+  const distanceLR = targetStyle.left as number + (targetStyle.width as number) - (selectedStyle.left as number)
+  const distanceLC = targetStyle.left as number + (targetStyle.width as number) / 2 - (selectedStyle.left as number)
+  const distanceRR = targetStyle.left as number + (targetStyle.width as number) - (selectedStyle.left as number + (selectedStyle.width as number))
+  const distanceRC = targetStyle.left as number + ((targetStyle.width) as number / 2) - (selectedStyle.left as number + (selectedStyle.width as number))
+  const distanceLL = targetStyle.left as number - (selectedStyle.left as number)
+  const distanceRL = targetStyle.left as number - ((selectedStyle.left as number) + (selectedStyle.width as number))
+  return {
+    [distanceLR]: {
+      lineX: targetStyle.left as number + (targetStyle.width as number),
+    },
+    [distanceLC]: {
+      lineX: targetStyle.left as number + (targetStyle.width as number) / 2
+    },
+    [distanceRR]: {
+      lineX: targetStyle.left as number + (targetStyle.width as number),
+      cmpX: targetStyle.left as number + (targetStyle.width as number) - (selectedStyle.width as number)
+    },
+    [distanceRC]: {
+      lineX: targetStyle.left as number + (targetStyle.width as number) / 2,
+      cmpX: targetStyle.left as number + (targetStyle.width as number) / 2 - (selectedStyle.width as number)
+    },
+    [distanceLL]: {
+      lineX: targetStyle.left as number
+    },
+    [distanceRL]: {
+      lineX: targetStyle.left as number,
+      cmpX: targetStyle.left as number - (selectedStyle.width as number)
+    }
+  }
+}
+
 const autoAlignWhenMove = (storeState: EditorStore) => {
   const { updateLinesCoordinate } = storeState
   const selectedComponent = getSelectedComponent(useEditorStore.getState())
+  // get latest components of store state to continue following calculate
   const components = useEditorStore.getState().components
   let noYLine = true
   for (let i = 0; i < components.length; i++) {
@@ -31,32 +63,7 @@ const autoAlignWhenMove = (storeState: EditorStore) => {
       continue
     }
     if (c.wrapperStyle && selectedComponent.wrapperStyle) {
-      const targetStyle = c.wrapperStyle
-      const selectedStyle = selectedComponent.wrapperStyle
-      const distanceLR = targetStyle.left as number + (targetStyle.width as number) - (selectedStyle.left as number)
-      const distanceLC = targetStyle.left as number + (targetStyle.width as number) / 2 - (selectedStyle.left as number)
-      const distanceRR = targetStyle.left as number + (targetStyle.width as number) - (selectedStyle.left as number + (selectedStyle.width as number))
-      // const distanceRC = targetStyle.left as number + ((targetStyle.width) as number / 2) - (selectedStyle.left as number + (selectedStyle.width as number))
-      // const distanceLL = targetStyle.left as number - (selectedStyle.left as number)
-      // const distanceRL = targetStyle.left as number - ((selectedStyle.left as number) + (selectedStyle.width as number))
-      // const distanceTB = targetStyle.top as number + (targetStyle.height as number) - (selectedStyle.top as number)
-      // const distanceTC = targetStyle.top as number - (selectedStyle.top as number + (selectedStyle.height as number) / 2)
-      // const distanceTT = targetStyle.top as number - (selectedStyle.top as number)
-      // const distanceBB = targetStyle.top as number + (targetStyle.height as number) - (selectedStyle.top as number + (selectedStyle.height as number))
-      // const distanceBC = targetStyle.top as number + (targetStyle.height as number) - (selectedStyle.top as number + (selectedStyle.height as number) / 2)
-      // const distanceBT = targetStyle.top as number - (selectedStyle.top as number + (selectedStyle.height as number))
-      const yMap = {
-        [distanceLR]: {
-          lineX: targetStyle.left as number + (targetStyle.width as number),
-        },
-        [distanceLC]: {
-          lineX: targetStyle.left as number + (targetStyle.width as number) / 2
-        },
-        [distanceRR]: {
-          lineX: targetStyle.left as number + (targetStyle.width as number),
-          cmpX: targetStyle.left as number + (targetStyle.width as number) - (selectedStyle.width as number)
-        }
-      }
+      const yMap = createYLineMap(c.wrapperStyle, selectedComponent.wrapperStyle)
       map(yMap, (v, k) => {
         if (Math.abs(Number(k)) < SHOW_LINE_DISTANCE) {
           noYLine = false
@@ -111,6 +118,7 @@ export const useMove = (options: UseMoveOptions = {}) => {
     // e.preventDefault();
     const onUp = () => {
       startCoordinate.current = null
+      storeState.updateLinesCoordinate({ left: undefined, top: undefined })
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
       document.removeEventListener('mouseleave', onUp)
