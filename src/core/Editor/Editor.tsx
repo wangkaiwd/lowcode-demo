@@ -1,7 +1,7 @@
 import LeftPanel from '../LeftPanel/LeftPanel.tsx'
 import css from './editor.module.less'
 import { useEditorStore } from '@/store/editStore.ts'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Blocker from '../Blocker'
 import OuterBox from '../OuterBox'
 import Scale from '../Scale'
@@ -9,9 +9,34 @@ import RightPanel from '../RightPanel'
 import { clearSelected, onChangeSelected } from '../../store/actions.ts'
 import { getSelectedComponents } from '../../store/helper.ts'
 import MarkerLines from '@/core/MarkerLines'
+import { Button, Dropdown, MenuProps, Space, Tooltip } from 'antd'
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
+import GuideLine from '@/core/GuideLine'
+import { GuideLineProps, XLineProps } from '@/core/GuideLine/types.ts'
 
+// const xs = [
+//   {
+//     groupUid: 'x',
+//     uid: '1',
+//   },
+//   {
+//     groupUid: 'x',
+//     uid: '2'
+//   },
+//   {
+//     uid: 'x',
+//     childrenUid: ['1', '2']
+//   }
+// ]
+
+const guideLineType = {
+  vertical: 'vertical',
+  horizontal: 'horizontal',
+  delete: 'delete'
+} as const
 const Editor = () => {
   const canvasRef = useRef<HTMLDivElement>(null)
+  const [guideLinesX, setGuideLinesX] = useState<GuideLineProps['xLines']>([])
   const {
     components,
     addComponent,
@@ -58,13 +83,64 @@ const Editor = () => {
     setDragItem()
     onChangeSelected(dragItem.uid)
   }
+
+  const onMenuClick: MenuProps['onClick'] = ({ key }) => {
+    if (key === guideLineType.horizontal) {
+      setGuideLinesX([...guideLinesX, {}])
+    } else if (key === guideLineType.delete) {
+      setGuideLinesX([])
+    }
+  }
+
+  const items = [
+    {
+      key: 'horizontal',
+      // label: '横向',
+      label: <Tooltip title={'在画布中间添加横向的绘图辅助线，支持拖动'}>横向</Tooltip>,
+    },
+    {
+      key: 'vertical',
+      label: '纵向',
+    },
+    {
+      key: 'delete',
+      label: '删除',
+    }
+  ]
+
+  const onMouseXLine = (line: XLineProps, i: number) => {
+    guideLinesX[i] = line
+    setGuideLinesX([...guideLinesX])
+  }
   return (
     <div className={css.editor}>
       <div className={css.leftPanel}>
         <LeftPanel/>
       </div>
       <div className={css.canvasWrapper}>
-        <RightPanel Config={selectedComponents[0]?.ConfigView}/>
+        <Space>
+          <RightPanel Config={selectedComponents[0]?.ConfigView}/>
+          <Button type="primary" size={'small'} icon={<ArrowLeftOutlined/>}>
+            后退
+          </Button>
+          <Button type="primary" size={'small'} icon={<ArrowRightOutlined/>}>
+            前进
+          </Button>
+          <Dropdown.Button
+            menu={{
+              items,
+              onClick: onMenuClick
+            }}
+          >
+            辅助线
+          </Dropdown.Button>
+          <Button size="small">
+            分组
+          </Button>
+          <Button size="small">
+            拆分
+          </Button>
+        </Space>
         <Scale/>
         <div className={css.canvasScrollView}>
           <div
@@ -78,10 +154,13 @@ const Editor = () => {
             }}
           >
             <OuterBox ref={outerBoxRef}/>
+            <GuideLine onMoveXLine={onMouseXLine} onAddXLine={() => { setGuideLinesX([...guideLinesX, {}]) }}
+                       xLines={guideLinesX}/>
             <MarkerLines/>
             {
               components.map((componentSchema) => {
                 const Component = componentSchema.type
+                if (!Component) return null
                 return (
                   <Blocker
                     ref={(ref) => {
@@ -91,7 +170,7 @@ const Editor = () => {
                       const { width, height } = ref.getBoundingClientRect()
                       updateComponent(componentSchema.uid, { el: ref, wrapperStyle: { width, height } })
                     }}
-                    id={componentSchema.uid}
+                    uid={componentSchema.uid}
                     key={componentSchema.uid}
                     style={componentSchema.wrapperStyle}
                   >

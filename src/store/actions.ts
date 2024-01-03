@@ -28,6 +28,8 @@ export const onZoomChange = (value: EditorStoreState['zoom']) => {
 export const onChangeSelected = (key: string) => {
   useEditorStore.setState((draft) => {
     const { selectedKeys } = draft
+    // uid -> groupUid -> childrenUid
+    // add children to Set
     // first only support operate single element
     selectedKeys.clear()
     if (!selectedKeys.has(key)) {

@@ -1,13 +1,15 @@
-import { Schema } from '@/types/schema.ts'
+import { PartialSchema, Schema } from '@/types/schema.ts'
 
 export interface ListItem {
   group: string;
   elements: Schema[];
 }
 
-export interface InternalComponent extends Schema {
+export interface InternalComponent extends PartialSchema {
   uid: string;
   el?: any;
+  groupUid?: string;
+  childrenUid?: string[];
 }
 
 export interface EditorStoreState {

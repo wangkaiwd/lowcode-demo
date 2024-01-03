@@ -1,4 +1,4 @@
-import { CSSProperties, FC } from 'react';
+import { CSSProperties, FC } from 'react'
 
 export interface Schema<T = any> {
   name: string;
@@ -10,3 +10,5 @@ export interface Schema<T = any> {
     config?: Record<string, any>;
   } & T;
 }
+
+export type PartialSchema = Partial<Schema>

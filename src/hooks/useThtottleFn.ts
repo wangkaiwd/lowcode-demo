@@ -10,5 +10,5 @@ export const useThrottleFn = (fn: Fn, options: TOptions = {}) => {
   const fnRef = useRef(fn)
   fnRef.current = fn
   const { wait = 200, ...rest } = options
-  return useCallback(throttle((...args) => fnRef.current(...args), wait, rest), [])
+  return useCallback(throttle(<T> (...args: T[]) => fnRef.current(...args), wait, rest), [fnRef])
 }

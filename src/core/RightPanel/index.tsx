@@ -1,57 +1,47 @@
-import { Button, Drawer, Form, Space } from 'antd';
-import { FC, forwardRef, useState } from 'react';
-import css from './index.module.less';
-import CommonConfig from './CommonConfig.tsx';
-import { useEditorStore } from '../../store/editStore.ts';
-import { onConfigChange, onWrapperStyleChange } from '../../store/actions.ts';
-import { getSelectedComponents } from '../../store/helper.ts';
-import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { Button, Drawer, Form, Space } from 'antd'
+import { FC, forwardRef, ReactNode, useState } from 'react'
+import css from './index.module.less'
+import CommonConfig from './CommonConfig.tsx'
+import { useEditorStore } from '../../store/editStore.ts'
+import { onConfigChange, onWrapperStyleChange } from '../../store/actions.ts'
+import { getSelectedComponents } from '../../store/helper.ts'
 
 interface RightPanelConfig {
   Config?: FC<any>;
 }
 
 const RightPanel = forwardRef<HTMLDivElement, RightPanelConfig>((props, ref) => {
-  const { Config } = props;
-  const [form] = Form.useForm();
+  const { Config } = props
+  const [form] = Form.useForm()
   const getComponent = () => {
-    const selectedComponents = getSelectedComponents(useEditorStore.getState());
-    return selectedComponents[0] ?? {};
-  };
-  const component = getComponent();
-  const [open, setOpen] = useState(false);
+    const selectedComponents = getSelectedComponents(useEditorStore.getState())
+    return selectedComponents[0] ?? {}
+  }
+  const component = getComponent()
+  const [open, setOpen] = useState(false)
   const showDrawer = () => {
-    form.setFieldsValue({ ...component.props?.config, wrapperStyle: component.wrapperStyle });
-    setOpen(true);
-  };
+    form.setFieldsValue({ ...component.props?.config, wrapperStyle: component.wrapperStyle })
+    setOpen(true)
+  }
   const onClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const onFinish = () => {
-    console.log('finish');
-    const { wrapperStyle, ...rest } = form.getFieldsValue();
-    onConfigChange(rest);
-    onWrapperStyleChange(wrapperStyle);
-  };
+    console.log('finish')
+    const { wrapperStyle, ...rest } = form.getFieldsValue()
+    onConfigChange(rest)
+    onWrapperStyleChange(wrapperStyle)
+  }
 
   const onFinishFailed = () => {
-    console.log('finish failed');
-  };
+    console.log('finish failed')
+  }
   return (
     <div className={css.rightPanel} ref={ref}>
-      <Space>
-        <Button type="primary" size={'small'} onClick={showDrawer}>
-          属性面板
-        </Button>
-        <Button type="primary" size={'small'} onClick={showDrawer} icon={<ArrowLeftOutlined/>}>
-          后退
-        </Button>
-        <Button type="primary" size={'small'} onClick={showDrawer} icon={<ArrowRightOutlined/>}>
-          前进
-        </Button>
-      </Space>
-
+      <Button type="primary" size={'small'} onClick={showDrawer}>
+        属性面板
+      </Button>
       <Drawer
         key={component.key}
         title="修改属性"
@@ -66,8 +56,8 @@ const RightPanel = forwardRef<HTMLDivElement, RightPanelConfig>((props, ref) => 
             <Button
               type="primary"
               onClick={() => {
-                onClose();
-                form.submit();
+                onClose()
+                form.submit()
               }}
             >
               确认
@@ -88,8 +78,8 @@ const RightPanel = forwardRef<HTMLDivElement, RightPanelConfig>((props, ref) => 
         </Form>
       </Drawer>
     </div>
-  );
+  )
 
-});
+})
 
-export default RightPanel;
+export default RightPanel

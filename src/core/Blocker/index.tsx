@@ -1,30 +1,29 @@
 import { ComponentProps, forwardRef } from 'react'
 import css from './index.module.less'
 import cls from 'classnames'
-import { useEditorStore } from '../../store/editStore.ts'
-import { useMove } from '../../hooks/useMove.tsx'
-import { onChangeSelected } from '../../store/actions.ts'
+import { useEditorStore } from '@/store/editStore.ts'
+import { onChangeSelected } from '@/store/actions.ts'
 
 interface ComponentContainerProps extends ComponentProps<'div'> {
-  id: string;
+  uid: string;
 }
 
 const Blocker = forwardRef<HTMLDivElement, ComponentContainerProps>(({
   style,
   className,
   children,
-  id
+  uid
 }, ref) => {
-  const { selectedKeys, zoom } = useEditorStore()
-  const selected = selectedKeys.has(id)
-  const { onMouseDown } = useMove({ onMouseDown: () => onChangeSelected(id), zoom, autoAlign: true })
+  const { selectedKeys } = useEditorStore()
+  const selected = selectedKeys.has(uid)
+  // const { onMouseDown } = useMove({ onMouseDown: () => onChangeSelected(uid), zoom, autoAlign: true })
   const onClick = () => {
-    onChangeSelected(id)
+    onChangeSelected(uid)
   }
   return (
     <div
       ref={ref}
-      onMouseDown={onMouseDown}
+      // onMouseDown={onMouseDown}
       className={cls(css.blocker, className, { [css.selected]: selected })}
       style={style}
       onClick={onClick}

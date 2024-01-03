@@ -2,7 +2,7 @@ import { UndoOutlined } from '@ant-design/icons';
 import React, { useRef } from 'react';
 import { getSelectedComponent, updateSelectedComponents } from '@/store/helper.ts';
 import css from './index.module.less';
-import { useThrottleFn } from '../../hooks/useThtottleFn.tsx';
+import { useThrottleFn } from '../../hooks/useThtottleFn.ts';
 import { useEditorStore } from '@/store/editStore.ts';
 import { getRotateDeg } from '@/shared/transform.ts';
 

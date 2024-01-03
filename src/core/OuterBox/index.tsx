@@ -8,7 +8,7 @@ import { useGetOuterStyle } from '@/core/Blocker/hooks.ts'
 
 const OuterBox = forwardRef<HTMLDivElement>((_props, ref) => {
   const { zoom } = useEditorStore()
-  const { onMouseDown } = useMove({ zoom })
+  const { onMouseDown } = useMove({ zoom, autoAlign: true })
   const outerStyle = useGetOuterStyle()
 
   return (

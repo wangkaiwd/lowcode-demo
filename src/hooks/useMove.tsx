@@ -1,7 +1,7 @@
 import React, { CSSProperties, useRef } from 'react'
 import { map } from 'lodash-es'
 import { getSelectedComponent, updateSelectedComponentWrapperStyle } from '../store/helper.ts'
-import { useThrottleFn } from '@/hooks/useThtottleFn.tsx'
+import { useThrottleFn } from '@/hooks/useThtottleFn.ts'
 import { useEditorStore } from '@/store/editStore.ts'
 import { EditorStore } from '@/store/editStoreTypes.ts'
 

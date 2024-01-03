@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { getSelectedComponents } from '@/store/helper.ts'
 import { useEditorStore } from '@/store/editStore.ts'
 
+// calculate outer zone
 export const useGetOuterStyle = () => {
   const selectedComponents = getSelectedComponents(useEditorStore.getState())
   // can't move multiple elements
